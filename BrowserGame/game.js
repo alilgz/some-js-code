@@ -17,100 +17,126 @@
 //6: rewrite with outer functions
 
  
-(function(elid, wi, he, exp, pot, gld, hp, lvl, cur_e, e_sz){
-    var AtkBonus=1;
-    var DefBonus=1;
-    var MaxHP=100;
+var Player = {
+      Class:0,
+      Exp:0,
+      Level:1,  
+      MaxHP:100, HP:100, 
+      AtkBonus:1, 
+      DefBonus:1,
+      ClassName: "Noob",
+      Gold:3000, // for debug!
+      pots:0, 
+
+
+    //drink potion
+     DrinkPotion : function()
+     { 
+        if (pots>0)
+        {
+            pots--;
+            HP+=10+2*Player.Level;
+            if(HP>Player.MaxHP) 
+                    HP=Player.MaxHP; 
+        }
+    },
+
+      Def : function()
+        {
+            return Math.min(200, Math.floor(Player.Level*2 + Player.DefBonus));
+        },
+
+        Atk :  function()
+        {
+            return  Math.floor(Player.AtkBonus/Player.Level + Player.Level*3 + 6 + Player.AtkBonus/3);
+        },
+        isMonk : function(){
+        return Player.PlayerClass==4;
+    },
+
+    isWarrior : function(){
+        return Player.PlayerClass==2;
+    },
+    isMage : function(){
+        return Player.PlayerClass==3;
+    }
+
+    };
+
+
+// less usable
+  
+    Player.isRogue = function(){
+        return Player.PlayerClass==1;
+    }
+    Player.isCleric = function(){
+        return Player.PlayerClass==5;
+    }
+
+
+Player.UpdateClassName=function(){
+    var add="";
+        if (Player.Level<=2){ add="Noob ";}
+        if (Player.Level>4){ add="Trained ";}
+        if (Player.Level>7){ add="Mighty ";}
+        if (Player.Level>10){ add="Expert ";}
+        
+        if (Player.PlayerClass==0){ Player.ClassName = add ;}
+        if (Player.PlayerClass==1){ Player.ClassName = add + "Rogue"; ;     }
+        if (Player.PlayerClass==2){ Player.ClassName = add + "Warrior";  }
+        if (Player.PlayerClass==3){ Player.ClassName = add + "Mage";    }
+        if (Player.PlayerClass==4){ Player.ClassName = add + "Monk";    } 
+        if (Player.PlayerClass==5){ Player.ClassName = add + "Healer";  }
+        Player.ClassName =  add+"unknown";
+    }  
+
+
+ Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold)
+    {
+        if (cost == 0 || cost<Player.Gold)
+        {
+                Player.Gold-=cost;
+                Player.MaxHP+=AddMaxHP;
+                Player.HP+=AddHP;
+                Player.AtkBonus+=AddAtk;
+                Player.DefBonus+=AddDef;
+                Player.Gold+=AddGold;
+        }
+    }
+
+
+console.log('begin');
+
+
+
+(function(elid, wi, he, exp, pot, gld, hp, lvl, cur_e, e_sz)
+    {
+
     
     var IMHP=12;
     var IMAtk=13;
     var IMXP=14;
     var IMGold=15;
     
-    //talents array: 3 active , 2 passive
-    // can be learn by other class[?], better multipliers for specified class
-    
-    // mechanism to skill learn
-    // 0. always available 
-    // 1. by level
-    // 2. buy for $$
-    // 3. spell books (for unique skill or upgrades)
-    // 4. Skill Points per level or Per Mob
-    
-    // need mechanism to avoid 'best skill' spam:
-    // 0. why avoid? want me add random effects?
-    // 1. mana
-    // 2. reuse
-    // 3. required items
-    // 4. drop/xp penalty ?
-    
-    
-    
-    // knight 
-    // passive: spikes - reflect % of received  damage 
-    // passive: shield block - receive less damage, lesser crits from mob
-    // make only one passive ? - reflect or decrease dmg
-    // good hp regen? more hp from pots? potion mastery?
-    // 1 knockdown - no damage from mob if success
-    // 2 : ?
-    // 3 : ?
-    
-    
-    // rogue
-    // passive: better avoid crits/ avoid normal damage
-    // passive: sneak chance, steal chance++
-    
-    // acive : move behind and stab x2
-    // active: decrease mob power/accuracy ?
-        
-    //mage
-    // mana shield: ??
-    // add mana ? can craft pots?
-    // levitate: first attack from mob - 0 dmg, because mage levitate
-    // charge : cast long skill - receive x2 damage, but make x4 
-    // can run from mob easy
-    // must be best with aoe
-    // debuff mob?
-    
-    
-    
-    // mobs 
-    // 0. add suffixes and multipliers
-    // 1. add drop potions
-    // 2. add groups (show as 3*50hp -> if has aoe can damage all )
-    // and 3. add mini bosses 
-    // 4. make their damage/level depends on player level (level 10 player must meet 'Epic Slime')
-    // 5. mobs with  skills?
-    // 6.  add ranged mobs, melee get extra damage when running to them
-    
-    // NPCs
-    // 0. one for each class
-    // 1. fake npc (humanoid monsters)
-    // 2. lesser prices for some class?
-    // 3. Gambling?
-    
-    // Items
-    // 0. Alternate weapon [ ? ] bow/throwing knife/minion?
-    // 1. repair after each fight? can't be repaired more than normal? 
-    var PlayerClass=0;
-    
+
 
     var Evasion=0;
     var CurrentMobMaxHP=200;    
    
    // todo, skills
 
-    var AOEMultiplier=0;    
+    //var AOEMultiplier=0;    
     var CriticalMultiplier=2;    
     var SneakAddChance=0;    
     var StealAddChance=0;    
-    var KnockDownChance=0;    
-    var LevitationAvoidChance=0;    
-    var ShieldBlockChance=0;    
-    var SpikesDamage=0;    
-    var Vampirism=0;    
-    var Berserker=0;    
+    //var KnockDownChance=0;    
+    //var LevitationAvoidChance=0;    
+    //var ShieldBlockChance=0;    
+    //var SpikesDamage=0;    
+    //var Vampirism=0;    
+    //var Berserker=0;    
     var Hint ="";
+
 
 
     var Traits=[
@@ -118,36 +144,56 @@
     // passive 'skills'
     // name,  key value, description, level, enabled, etc ]
         ["Camping",  1, "Restore health after fight", 1 ],
-        
         ["Prayer",  1, "Additional health restored from potions", 1],
-        
         ["Evasion",  10, "% Chance to avoid monster attack", 1],
-        
         ["Greed",  10, "% Chance to find x2 gold", 1],
-
         ["Critical Strike",  30, "% Chance to make critical x2 attack", 1], 
-
         ["Poison",  5, "% Additional damage", 1], 
 
-    //
+        //warrior        
+        ["Shield Mastery",  5, "5-25% more effect from armor", 1], 
+        ["Reflect",  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+        //rogue    
+         ["Traps mastery",  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+        //Wizard
+        ["Arcane Mastery",  2, "First nuke do x2/x2.25/x2.5/x2.75/x3 Damage", 1], 
+        ["Vampiric",  2, "restoring  2-10% from damage inflicted", 1], 
+        //Monk
+        ["OverHit!",  2, "If damage  x2 more  from mob HP left - get 20% exp bonus", 1], 
+        ["Cripple",  30, "If attack crits -  mob damage - decreased for penalty 30%-60%", 1], 
+        //Healer
+        ["Potion mastery",  20, " 20-80% chance to get 1 pot from each monster", 1]
 
     ];
 
-    var ImproveTrait = function(traitName)   {
+    var ImproveTrait = function(traitName, cost=200)   {
 
         for (var i = Traits.length - 1; i >= 0; i--) 
         {
             if ( Traits[i][0] == traitName){
 
-                if (Traits[i][3]<9 && gld>=200)
+                if (Traits[i][3]<9 && gld>=cost)
                 {
                     Traits[i][3]++; 
-                    gld-=200;
+                    gld-=cost;
                 } 
             }
         }
 
     }
+
+
+ var IsTraitEnabled = function(traitName)   {
+
+        for (var i = Traits.length - 1; i >= 0; i--) 
+            if ( Traits[i][0] == traitName) 
+                return Traits[i][1]>0;
+
+            return false;
+    }
+
+
+
 
  var SetTraitKeyValue = function(traitName, val)   {
 
@@ -155,30 +201,23 @@
             if ( Traits[i][0] == traitName) 
                 Traits[i][1]=val;
 
-    }
+    };
 
 var GetTraitValue = function(traitName)   {
 
         for (var i = Traits.length - 1; i >= 0; i--) 
         {
-            if ( Traits[i][0] == traitName)  return Traits[i][3] * Traits[i][1];            }
+            if ( Traits[i][0] == traitName)  
+                 return Traits[i][3] * Traits[i][1]; 
+            // should be some unique?
         }
         return 0;
 
-    }
+    };
 
 
-
-
-
-
-    var HealPower=1;      // 1 = 100%, for mage, warrior -  1.1; for monk, cleric 1.3 ( 1.4 -> 1.5 -> 1.6 after skill lvl up ), 1 for rogue
-    var CanUseHeal=0;     // 0 = no heal after fight, 1 = small heal (warrior,  monk) , 2 = big heal after fight (Cleric)
-
-
- 
-
-    var DrawPlayerInterface=function(){
+    var DrawPlayerInterface=function()
+    {
 
         var i=0;
         
@@ -188,7 +227,7 @@ var GetTraitValue = function(traitName)   {
 
         ctx.strokeRect(150,40,300,10);
         ctx.fillStyle = "green";
-        ctx.fillRect(151,41,  Math.min(300,  Math.floor(300*hp/MaxHP)),8);
+        ctx.fillRect(151,41,  Math.min(300,  Math.floor(300*Player.HP/Player.MaxHP)),8);
 
         if (evs[cur_e].length>IMHP+1) {
         ctx.fillStyle = "red";
@@ -197,9 +236,7 @@ var GetTraitValue = function(traitName)   {
         ctx.fillStyle = "gray";
         ctx.fillRect(320+151,41,  Math.min(100,  Math.floor(300*evs[cur_e][IMHP]/CurrentMobMaxHP)),8);
         }
-
-
-        
+       
         
         var iconSpaceX=10;
         var iconSpaceY=10;
@@ -218,184 +255,108 @@ var GetTraitValue = function(traitName)   {
 
 
 
-    
+        var VisibleTraitCount=Traits.length;
+        for (var i = Traits.length - 1; i >= 0; i--) {
 
+              if (Traits[i][1]==0)  
+                VisibleTraitCount--;
+        }
 
-        for (var i = Traits.length - 1; i >= 0; i--) 
+        for (var i = VisibleTraitCount -1 ; i >= 0; i--) 
         {
-            ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "blue";
-            ctx.fillText(Traits[i][3], 0+ i*(iconSpaceX + iconWidth)+7, 560+11);
-            ctx.fillStyle = "red";
-            ctx.fillText(Traits[i][0], 10+ i*(iconSpaceX + iconWidth)+7, 560+11);
-            ctx.fillText(" ",i*(iconSpaceX + iconWidth)+7, 560+22);
+             if (Traits[i][1]!=0)  
+             {
+                ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
+                ctx.fillStyle = "blue";
+                ctx.fillText(Traits[i][3], 0+ i*(iconSpaceX + iconWidth)+7, 560+11);
+                ctx.fillStyle = "red";
+                ctx.fillText(Traits[i][0], 10+ i*(iconSpaceX + iconWidth)+7, 560+11);
+                ctx.fillText(" ",i*(iconSpaceX + iconWidth)+7, 560+22);
+            }
         }
 
         ctx.fillStyle = "red";
         ctx.fillText(Hint, 0 * (iconSpaceX + iconWidth)+7, 590);
 
 
-        /*
-       if (Vampirism>0 || debug)
-        {
-            ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "red";
-            ctx.fillText("VR",i*(iconSpaceX + iconWidth)+7, 560+12);
-            ctx.fillText(Vampirism + "%",i*(iconSpaceX + iconWidth)+7, 560+22);
-            
-        }
-
-        i++
-        if (SpikesDamage>0 || debug)
-        {
-             ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "red";
-            ctx.fillText("Reflect", i*(iconSpaceX + iconWidth)+7, 560+12);
-            ctx.fillText( SpikesDamage + "%", i*(iconSpaceX + iconWidth)+7, 560+22);
-        }
-        
-        i++
-        if (SneakAddChance>0 || debug)
-        {
-             ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "red";
-            ctx.fillText("Sneak", i*(iconSpaceX + iconWidth)+7, 560+12);
-            ctx.fillText(SneakChance()+"%",i*(iconSpaceX + iconWidth)+7, 560+22);
-        }
-        
-        i++
-        if (StealAddChance>0 || debug)
-        {
-             ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "red";
-            ctx.fillText("Steal", i*(iconSpaceX + iconWidth)+7, 560+12);
-            ctx.fillText(StealChance()+"%",i*(iconSpaceX + iconWidth)+7, 560+22);
-        }
-
-        i++
-        if (LevitationAvoidChance>0 || debug)
-        {
-             ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
-            ctx.fillStyle = "red";
-            ctx.fillText("Fly", i*(iconSpaceX + iconWidth)+7, 560+12);
-            ctx.fillText("+75%",i*(iconSpaceX + iconWidth)+7, 560+22);
-        }
-        */
-
-
-    }
+    };
     
+
+    var Roll = function(percent){
+        return Math.floor(Math.random()*100) <= percent; // so Roll(90) give 90% chance success)
+    };
+
     var R20 = function(){
         return Math.floor(Math.random()*20);
-    }
-    var Def = function()
-    {
-        return Math.min(200, Math.floor(lvl*2 + DefBonus));
-    }
-    var StealChance=function(){
-            if (isRogue())
-                return 5+ StealAddChance*2;
-        return StealAddChance;
-    }
-    var SneakChance=function(){
-            if (isRogue())
-                return 5+ SneakAddChance*2;
-        return SneakAddChance;
-    }
-    var isWarrior = function(){
-        return PlayerClass==2;
-    }
-    var isMage = function(){
-        return PlayerClass==3;
-    }
-    var isRogue = function(){
-        return PlayerClass==1;
-    }
-    var isCleric = function(){
-        return PlayerClass==5;
-    }
+    };
 
-  var isMonk = function(){
-        return PlayerClass==4;
-    }
-    var ClassName=function(classId, level){
-    var add="";
-        if (level<=2){ add="Noob ";}
-        if (level>4){ add="Trained ";}
-        if (level>7){ add="Mighty ";}
-        if (level>10){ add="Expert ";}
-        
-        if (classId==0){ return add;}
-        if (classId==1){ return add+"Rogue"; HealPower=1;     }
-        if (classId==2){ return add+"Warrior"; HealPower=1.1; }
-        if (classId==3){ return add+"Mage"; HealPower=1.1 ;   }
-        if (classId==4){ return add+"Monk"; HealPower=1.3 ;   } 
-        if (classId==5){ return add+"Healer"; HealPower=1.3;  }
-        return add+"unknown";
-    }    
-    
-    var Atk = function()
-    {
-        return  Math.floor(AtkBonus/lvl + lvl*3 + 6 + AtkBonus/3);
-    }
+    var R100 = function(){
+        return Math.floor(Math.random()*100);
+    };
+
+   
 
     var calcDMGFromPlayer = function(atk, Tdef, Thp)
     {
         var criticalBonus=0;
-        if (Math.random()>0.7){   
-            criticalBonus=atk*CriticalMultiplier;    
-        }
+
         var normalDamage=(atk*atk) / (Tdef*10);
+
         var minDamage=(0.5 + atk/10);
         
-        if (criticalBonus>0)
+        if (criticalBonus > 0)
         {
-            return    Math.floor( minDamage + criticalBonus  );
+            return Math.floor( minDamage + criticalBonus  );
         }
-        return    Math.floor( minDamage +  normalDamage );
-    }
+        return Math.floor( minDamage +  normalDamage );
+    };
 
     var calcDMGFromMob = function(atk, Tdef, Thp)
     {
         var criticalBonus=0;
-        if (Math.random()>0.8){   
-            criticalBonus=atk*2;    
-        }
+
         var normalDamage=(atk*atk) / (Tdef*10);
+
         var minDamage=(0.5 + atk/10);
         
         if (criticalBonus>0)
         {
             return    Math.floor( minDamage + criticalBonus  );
         }
+
         return    Math.floor( minDamage +  normalDamage );
-    }
+
+    };
 
  
 
-var MobToElements = function(mob){
-    var element = [ mob.name, "description here" ].concat(  battle, mob.hp, mob.atk, mob.xp, mob.gold);
-    return element;
-}
+    var MobToElements = function(mob)
+    {
+        var element = [ mob.name,  mob.desc ].concat(  battle, mob.hp, mob.atk, mob.xp, mob.gold);
+        return element;
+    };
 
 
-
-
-function monster(mname, hp, damage, defence, exp, gold){
- this.name=mname;
- this.hp=hp;
- this.atk=damage;
- this.def=defence;
- this.xp=exp;
- this.gold=gold;
-}
+    function monster(mname, hp, damage, defence, exp, gold, desc="")
+    {
+     this.name=mname;
+     this.hp=hp;
+     this.atk=damage;
+     this.def=defence;
+     this.xp=exp;
+     this.gold=gold;
+     this.description = desc;
+    };
 
 
     var hit = function(){
-        var PlayerDidDamage = calcDMGFromPlayer(Atk(),evs[cur_e][IMAtk]/5, evs[cur_e][IMHP]); 
-        var PlayerGotDamage = calcDMGFromMob(evs[cur_e][IMAtk],Def(),hp) ;
+
+        console.log("[Hit]  player class=", PlayerClass);
+
+        var PlayerDidDamage = calcDMGFromPlayer(Player.Atk(),evs[cur_e][IMAtk]/5, evs[cur_e][IMHP]); 
+        var PlayerGotDamage = calcDMGFromMob(evs[cur_e][IMAtk],Player.Def(),Player.HP) ;
         //also monster got damage from spikes
-        PlayerDidDamage += (PlayerGotDamage*SpikesDamage/100);
+        //PlayerDidDamage += (PlayerGotDamage*SpikesDamage/100);
         
         evs[cur_e][IMHP] -=  PlayerDidDamage;
         hp -=  PlayerGotDamage;        
@@ -404,23 +365,26 @@ function monster(mname, hp, damage, defence, exp, gold){
        if (evs[cur_e][IMHP]<=0) {
             var GotMoney = evs[cur_e][IMGold];
             var GotExp = evs[cur_e][IMXP];
-            if (R100() <= GetTraitValue("Greed")){
+
+            if (R100() <= GetTraitValue("Greed"))
+            {
                  GotMoney *= 2;
             }
 
 
             alert("Monster defeated and you got "+GotExp+"EXP and $" + GotMoney);
-            exp+=evs[cur_e][IMXP]; 
-            gld += GotMoney ;
+
+            Player.Exp+=evs[cur_e][IMXP]; 
+            Player.Gold += GotMoney ;
 
            // dont let hero die if he killed mob 
-           hp = Math.max(1,hp);  
+           Player.HP = Math.max(1,hp);  
 
             // restore some hp from Camping
-                var RestoredHP = (MaxHP * GetTraitValue("Camping") * HealPower / 100) ;
-                hp= Math.min(MaxHP, hp + RestoredHP);
+                var RestoredHP = (Player.MaxHP * GetTraitValue("Camping")  / 100) ;
+                hp= Math.min(Player.MaxHP, Player.HP + RestoredHP);
 
-            while (exp>=lvl*lvl*5) { exp-=lvl*lvl*5; hp+=10; lvl++; alert("Level Up!") }
+            while (exp>=Player.Level*Player.Level*5) { exp-=Player.Level*Player.Level*5; hp+=10; Player.Level++; alert("Level Up!") }
             cur_e++; 
             
             if (cur_e==e_sz) alert("Victory!")
@@ -433,17 +397,19 @@ function monster(mname, hp, damage, defence, exp, gold){
         } 
         if (evs[cur_e][IMHP]>0 && hp>0)
         {
+            ;
+
         // both alive - apply vampiric effects
+        /*
            if ( hp <= MaxHP &&  Vampirism > 0 )
             { 
              hp += Math.floor(PlayerDidDamage * Vampirism / 100);
              hp = Math.min( MaxHP,  hp );
             }
+            */
         }
-    }
+    };
     
-    //drink potion
-    var use = function(){ if (pot>0){pot--;hp+=10+2*lvl;if(hp>MaxHP)hp=MaxHP} }
     
     //move to next cell
     var nxt = function(){ 
@@ -463,7 +429,7 @@ var skp = function()
 
     // sneak give no exp, and no money 
     cur_e++; 
-}
+};
     
     //run from mob
 var dns = function()
@@ -480,7 +446,7 @@ var dns = function()
         gld-=5;
     }
     cur_e++;
-}
+};
     
     //try to steal drop from alive mob
     var tlk = function(){ 
@@ -490,38 +456,89 @@ var dns = function()
         // monk = peace 
         // healer = sleep ( chance for 100% steal)
         cur_e++ 
-    }
+    };
     
     //nothing u can do here
-    var nop = function(){ ; }
+    var nop = function(){ ; };
  
-  
+  var InitClassMasteries = function()
+  {
+
+    if ( Player.PlayerClass != 2){
+        SetTraitKeyValue("Shield Mastery",  0) ;
+        SetTraitKeyValue("Reflect",  0) ;
+    }
+    if (Player.PlayerClass != 3)
+    {
+        SetTraitKeyValue("Arcane Mastery",  0) ;
+        SetTraitKeyValue("Vampiric",  0) ;
+    }
+    if (Player.PlayerClass!=1)
+    {
+       SetTraitKeyValue("Traps mastery",  0) ;
+    }
+        
+    if (Player.PlayerClass!=4)
+    {
+    SetTraitKeyValue("OverHit!",  0) ;
+    SetTraitKeyValue("Cripple",  0) ;
+    }
+
+    if (Player.PlayerClass != 5){
+        SetTraitKeyValue("Potion mastery",  0) ;
+    }
+
+  };
+
+
     var ButtonAttack = function()
     {
-        if (PlayerClass==1)
+        if (Player.PlayerClass==1)
              return "Stab";
-        if (PlayerClass==3)
+        if (Player.PlayerClass==3)
              return "Nuke";
-        if (PlayerClass==4)
+        if (Player.PlayerClass==4)
              return "Kick";
          
         return "Attack";
     }
 
     var ButtonSneak = function(){
-        if (PlayerClass==1)
+        if (Player.PlayerClass==1)
              return "Sneak 75%";
-        if (PlayerClass==3 || PlayerClass==5 )
+        if (Player.PlayerClass==3 || Player.PlayerClass==5 )
              return "Sneak 5%";
         return "Sneak 40%";
     }
      
     var ButtonSteal = function(){
-        if (isRogue)
+        if (Player.isRogue())
              return "Steal 75%";
-        if (isMage)
+        if (Player.isMage())
              return "Steal 5%";
         return "Steal 10%";
+    }
+
+   
+
+    var TitleForClass = function( TitleRogue, TitleWarrior, TitleWizard, TitleHealer, TitleMonk)
+    {
+
+        console.log("[pc]= ", Player.PlayerClass);
+
+           if (Player.PlayerClass == 1) 
+             return TitleRogue;
+           if (Player.PlayerClass == 2) 
+             return TitleWarrior;
+           if (Player.PlayerClass == 3) 
+             return TitleWizard;
+
+           if (Player.PlayerClass == 4) 
+             return TitleHealer;
+           if (Player.PlayerClass == 5) 
+             return TitleMonk;
+
+         return "WTF??";
     }
 
 
@@ -529,7 +546,7 @@ var dns = function()
     // general battle, must be modified for each class
     
     var battle = [ ButtonAttack , "Use Potion +10HP", ButtonSneak,"Run 50%", ButtonSteal,
-                  hit, use, skp, dns, tlk ];
+                  hit, Player.DrinkPotion, skp, dns, tlk ];
          
     
     var canvas=document.querySelector(elid), ctx=canvas.getContext("2d");
@@ -543,15 +560,19 @@ var dns = function()
         e_tp=[
             ["Village", "Your adventure start here. Choose your class:", "Rogue", "Warrior", "Mage","Monk" , "Healer",
             // set class bonuses for traits ?
-        function(){ PlayerClass=1;
+        function(){ 
+            PlayerClass=1;
 
             // rogue - high greed, high eva, high crit,good poison
         SetTraitKeyValue("Camping",  1),
         SetTraitKeyValue("Prayer",  1),
         SetTraitKeyValue("Evasion",  10),
         SetTraitKeyValue("Greed",  20);   
-        SetTraitKeyValue("Critical Strike",  35) 
-        SetTraitKeyValue("Poison",  7) 
+        SetTraitKeyValue("Critical Strike",  35) ;
+        SetTraitKeyValue("Poison",  7) ;
+        // hide extra Traits
+         InitClassMasteries();
+
         cur_e++ }, 
 
         function(){ PlayerClass=2;
@@ -562,6 +583,8 @@ var dns = function()
         SetTraitKeyValue("Greed",  10);   
         SetTraitKeyValue("Critical Strike",  25) 
         SetTraitKeyValue("Poison",  4) 
+         // hide extra Traits
+        InitClassMasteries();
 
          cur_e++ }, 
         function(){ PlayerClass=3;
@@ -572,6 +595,7 @@ var dns = function()
         SetTraitKeyValue("Greed",  15);   
         SetTraitKeyValue("Critical Strike",  15) 
         SetTraitKeyValue("Poison",  8) 
+        InitClassMasteries();
          cur_e++ },
         function(){ PlayerClass=4; 
             // monk - no greed, good eva, low poison, good crit
@@ -581,6 +605,7 @@ var dns = function()
         SetTraitKeyValue("Greed",  0);   
         SetTraitKeyValue("Critical Strike",  35) 
         SetTraitKeyValue("Poison",  5) 
+        InitClassMasteries();
         cur_e++ },  
         function(){ 
             // good restore / poisons
@@ -591,11 +616,61 @@ var dns = function()
         SetTraitKeyValue("Greed",  7);   
         SetTraitKeyValue("Critical Strike",  15) 
         SetTraitKeyValue("Poison",  12) 
+        InitClassMasteries();
         cur_e++ }, 
          ,nxt
 
     ],
 
+
+      // locations for Warrrior : shop { training,  improve shield }
+      ["BlackSmith", "Dude with hammer can make your gear better and train you as Fighter.", 
+
+
+      // rog, war, wiz, heal, monk
+        TitleForClass( "Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
+        TitleForClass("Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
+        "Leave",
+        function(){ console.log( 'CRAP = ', Player.PlayerClass); return TitleForClass( "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - ")}, 
+        TitleForClass("-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work"), 
+        // var DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold){
+        
+        function(){TitleForClass( //"Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
+            function(){ DoTraining(50, 0,0, 6, 0, 0); },  // rog 
+            function(){ DoTraining(50, 0,0, 6, 0, 0); },  //war
+            function(){ DoTraining(100, 0,0, 6, 0, 0); },   //wiz
+            function(){ DoTraining(50, 0,0, 4, 0, 0); },  // heal
+            function(){ DoTraining(50, 4,0, 2, 0, 0); }  // monk
+        )},
+
+        function(){TitleForClass( //"Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
+            function(){ DoTraining(50, 0,0, 0, 4, 0); },  // rog 
+            function(){ DoTraining(50, 2,0, 0, 4, 0); },  //war
+            nop,   //wiz
+            nop,  // heal
+            nop  // monk
+        )},
+        
+        nxt, // leave
+        function(){TitleForClass( // "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - "), 
+            function(){ ImproveTrait("Critical Strike", 100); },  // rog 
+            function(){ ImproveTrait("Shield Mastery", 100); },  //war
+            nop,   //wiz
+            function(){ ImproveTrait("Critical Strike", 100); },  // heal
+            nop  // monk
+        )},
+
+        function(){ TitleForClass(//"-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work"), 
+            nop,  // rog 
+            function(){ DoTraining(0, 0,-2, 0, 0, 50); },  //war
+            function(){ DoTraining(0, 0,0, 0, 0, 50); },   //wiz
+            function(){ DoTraining(0, 0,0, 0, 0, 50); },  // heal
+            function(){ DoTraining(0, 4,-2, 2, 0, 0); }  // monk
+        )}
+
+     ],
+
+/*
     // locations for all : shop { heal, pots, upgrade weapon/armor }
     //bonus for wizards - extra pot on max heal, extra max hp, also training give more to wiz
     ["Shop", "Wizard provides his services", "Buy Potion $20", "Full Heal $100", "Leave","Enchant Weapon $50","Enchant Armor 50$",
@@ -608,11 +683,7 @@ var dns = function()
 
     // locations for Healer : learn heal power
 
-/* 
-    var HealPower=1;      // 1 = 100%, for mage, warrior -  1.1; for monk, cleric 1.3 ( 1.4 -> 1.5 -> 1.6 after skill lvl up ), 1 for rogue
-    var CanUseHeal=0;     // 0 = no heal after fight, 1 = small heal (warrior,  monk) , 2 = big heal after fight (Cleric)
-*/
-// bonus for clerics / monks ? 
+    // bonus for clerics / monks ? 
     ["Church", "Cleric provides his services", "Buy Potion $20", "Full Heal $50", "Leave","Learn 'Greed'" , "Improve 'Camping'",
         function(){ if(gld>=20 )  { gld-=20; pot++} },
         function(){ if(gld>=100)  { gld-=100; hp=MaxHP; } }, nxt ,
@@ -654,19 +725,7 @@ var dns = function()
         function(){ if(gld>=300 && SneakChance() <90 && isRogue()) {gld-=300; SneakAddChance+=5;} },
      ],
     
-         // locations for Warrrior : shop { training,  improve shield }
-      ["Blacksmith", "Dude with hammer can make your gear better and train you as warrior.", "Basic Training $50", "5% Shield Rate $100", "Leave"," - ","5% Reflect $300",
-        function(){ if(gld>=50)  {
-            gld-=50;AtkBonus+=2 ; DefBonus+=2; MaxHP+=2;
-            if (isWarrior())
-                { DefBonus+=4; }
-        } 
-        },
-        function(){ if(gld>=100 && ShieldBlockChance<50 && isWarrior()) { gld-=100; ShieldBlockChance+=5; } }, 
-        nxt,
-        nop,
-        function(){ if(gld>=300 && SpikesDamage<50 && isWarrior()) { gld-=300; SpikesDamage+=5; }  },
-     ],
+   
 
 
      // should we remove it? it's from original game
@@ -697,7 +756,10 @@ var dns = function()
         } },
         function(){ alert("He stole all your money and puff.. disappear"); gld=0; cur_e++;} , nxt ,
         function(){  DefBonus+=1; MaxHP-=5; },   ,],
-        
+        */
+
+
+
         // monsters: from strong - to weak
 
     ["SawMan", "Huge man with a saw, it's really danger"].concat(battle,160,30,50,200),
@@ -712,7 +774,7 @@ var dns = function()
     MobToElements( new monster("Lizard", 60, 16, 16, 50, 1) ),
 
     // final boss
-    ["Dragon", "Omg! It is evil Dragon!","Attack","Use Potion +10HP","-","-","-",hit,use,,,,800,130,100,1000 ] ];
+    ["Dragon", "Omg! It is evil Dragon!","Attack","Use Potion +10HP","-","-","-",hit,Player.DrinkPotion,,,,800,130,100,1000 ] ];
 
 
 // init cells 
@@ -720,6 +782,7 @@ var dns = function()
     var q=e_tp.length-2;
 // 1st is village         
      evs.push( e_tp[0].slice(0) );
+     evs.push( e_tp[1].slice(0) );
 
 
 
@@ -735,21 +798,20 @@ var dns = function()
 
 
             
-    var game = setInterval(function(){
+    var game = setInterval(function()
+    {
         
     ctx.clearRect(0,0,wi,he);
-
     ctx.fillText("NanoRPG in 30 lines of JavaScript by ripatti (modified by alilgz)",10,15);
-
     // basic stats
-    ctx.fillText("LVL "+lvl+
-         "  HP "   + hp    + "/"+MaxHP+
-         "  EXP "  + exp   + "/"+lvl*10+
-         "  ATK "  + Atk() + //Math.floor(AtkBonus*lvl*4+6)+
-         "  DEF "  + Def() + //Math.floor(lvl*2*DefBonus-1)+
-         "  Gold $"+ gld   + "  Potions "+pot,10,30);
-        
-        ctx.fillText("Class: " + ClassName(PlayerClass,lvl),10,45);
+    ctx.fillText("LVL "+ Player.Level+
+         "  HP "   +  Player.HP    + "/"+ Player.MaxHP +
+         "  EXP "  +  Player.Exp   + "/"+ Player.Level * 10+
+         "  ATK "  +  Player.Atk() + 
+         "  DEF "  +  Player.Def() + 
+         "  Gold $"+   Player.Gold + "  Potions "+ Player.pots,10,30);
+       
+    ctx.fillText("Class: " + Player.ClassName,10,45);
         
 
         // draw map 
@@ -758,7 +820,7 @@ var dns = function()
             //14 in row
             cX=i % 14;
             cY=Math.floor(i/14);
-            ctx.fillText((i==e_sz-1||i<=cur_e)?evs[i][0]:"??",cX*50+20,50*cY+ 120);
+            ctx.fillText((i==e_sz-1||i<=cur_e) ? evs[i][0] : "??", cX*50+20, 50*cY+ 120);
         }
 
         // hp bar + skills bar
@@ -788,10 +850,8 @@ var dns = function()
     }, 100);
 
     
-    document.addEventListener('click', function(e){
-        
-       
-
+    document.addEventListener('click', function(e)
+    {
         if (hp>0)
 
             for (var i=0;i<5;i++)
@@ -820,11 +880,10 @@ var dns = function()
             {
             for (var i=Traits.length-1; i>=0; i--)
                 {
-                 console.log("move" + e.offsetX +':'+e.offsetY );
+                 //console.log("move" + e.offsetX +':'+e.offsetY );
                 if ( i*(iconSpaceX + iconWidth)+5  <= e.offsetX &&  e.offsetX  < i*(iconSpaceX + iconWidth)+5 + iconWidth  && 560 <= e.offsetY && e.offsetY < 560 + iconHeight )
                         {
-
-                                Hint =Traits[i][1] +""+ Traits[i][2];
+                            Hint =Traits[i][1] +""+ Traits[i][2];
                         }
                 }
             }
