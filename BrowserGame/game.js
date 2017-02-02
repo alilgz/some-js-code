@@ -125,7 +125,7 @@
         
         ["Greed",  10, "% Chance to find x2 gold", 1],
 
-        ["Critical Strike",  30, "% Chance to make critical attack", 1], 
+        ["Critical Strike",  30, "% Chance to make critical x2 attack", 1], 
 
         ["Poison",  5, "% Additional damage", 1], 
 
@@ -446,7 +446,10 @@ function monster(mname, hp, damage, defence, exp, gold){
     var use = function(){ if (pot>0){pot--;hp+=10+2*lvl;if(hp>MaxHP)hp=MaxHP} }
     
     //move to next cell
-    var nxt = function(){ cur_e++ }
+    var nxt = function(){ 
+        cur_e++; 
+        // reset CELL only variables (for 'one time' actions)
+     }
 
 //sneak  mob
 var skp = function()
@@ -457,6 +460,8 @@ var skp = function()
         hp-=10;
         hp = Math.max(1,hp);
     }
+
+    // sneak give no exp, and no money 
     cur_e++; 
 }
     
@@ -478,13 +483,21 @@ var dns = function()
 }
     
     //try to steal drop from alive mob
-    var tlk = function(){ cur_e++ }
+    var tlk = function(){ 
+        // trief  = steal, some chance
+        // warrior = practice ( no money, but chance for x2 exp)
+        // wiz = learn // ? 
+        // monk = peace 
+        // healer = sleep ( chance for 100% steal)
+        cur_e++ 
+    }
     
     //nothing u can do here
     var nop = function(){ ; }
  
   
-    var ButtonAttack = function(){
+    var ButtonAttack = function()
+    {
         if (PlayerClass==1)
              return "Stab";
         if (PlayerClass==3)
@@ -708,6 +721,12 @@ var dns = function()
 // 1st is village         
      evs.push( e_tp[0].slice(0) );
 
+
+
+// this crap should be improved
+// keep only few NPC, more monsters
+// only 1 time traveler, not on 1-2 line, but later
+// 
     for (var i=0;i<e_sz-2;i++) 
              {    evs.push( e_tp[1+Math.floor(Math.random()*q)].slice(0) );}
 
@@ -786,6 +805,8 @@ var dns = function()
                    }
     }, false);
 
+
+    // add same hints to buttons ( class description?)
 
      document.addEventListener('mousemove', function(e){
         var iconSpaceX=10;
