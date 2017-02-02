@@ -127,7 +127,7 @@
 
         ["Critical Strike",  30, "% Chance to make critical attack", 1], 
 
-        ["Strength",  5, "% Additional damage", 1], 
+        ["Poison",  5, "% Additional damage", 1], 
 
     //
 
@@ -148,6 +148,28 @@
         }
 
     }
+
+ var SetTraitKeyValue = function(traitName, val)   {
+
+        for (var i = Traits.length - 1; i >= 0; i--) 
+            if ( Traits[i][0] == traitName) 
+                Traits[i][1]=val;
+
+    }
+
+var GetTraitValue = function(traitName)   {
+
+        for (var i = Traits.length - 1; i >= 0; i--) 
+        {
+            if ( Traits[i][0] == traitName)  return Traits[i][3] * Traits[i][1];            }
+        }
+        return 0;
+
+    }
+
+
+
+
 
 
     var HealPower=1;      // 1 = 100%, for mage, warrior -  1.1; for monk, cleric 1.3 ( 1.4 -> 1.5 -> 1.6 after skill lvl up ), 1 for rogue
@@ -289,7 +311,13 @@
     var isRogue = function(){
         return PlayerClass==1;
     }
+    var isCleric = function(){
+        return PlayerClass==5;
+    }
 
+  var isMonk = function(){
+        return PlayerClass==4;
+    }
     var ClassName=function(classId, level){
     var add="";
         if (level<=2){ add="Noob ";}
@@ -302,7 +330,7 @@
         if (classId==2){ return add+"Warrior"; HealPower=1.1; }
         if (classId==3){ return add+"Mage"; HealPower=1.1 ;   }
         if (classId==4){ return add+"Monk"; HealPower=1.3 ;   } 
-        if (classId==4){ return add+"Healer"; HealPower=1.3;  }
+        if (classId==5){ return add+"Healer"; HealPower=1.3;  }
         return add+"unknown";
     }    
     
@@ -374,16 +402,34 @@ function monster(mname, hp, damage, defence, exp, gold){
         
         //player won
        if (evs[cur_e][IMHP]<=0) {
-            alert("Monster defeated and you got "+evs[cur_e][IMXP]+"EXP and $"+evs[cur_e][IMGold]);
-            exp+=evs[cur_e][IMXP]; gld+=evs[cur_e][IMGold];
+            var GotMoney = evs[cur_e][IMGold];
+            var GotExp = evs[cur_e][IMXP];
+            if (R100() <= GetTraitValue("Greed")){
+                 GotMoney *= 2;
+            }
+
+
+            alert("Monster defeated and you got "+GotExp+"EXP and $" + GotMoney);
+            exp+=evs[cur_e][IMXP]; 
+            gld += GotMoney ;
+
            // dont let hero die if he killed mob 
            hp = Math.max(1,hp);  
+
+            // restore some hp from Camping
+                var RestoredHP = (MaxHP * GetTraitValue("Camping") * HealPower / 100) ;
+                hp= Math.min(MaxHP, hp + RestoredHP);
+
             while (exp>=lvl*lvl*5) { exp-=lvl*lvl*5; hp+=10; lvl++; alert("Level Up!") }
-            cur_e++; if (cur_e==e_sz) alert("Victory!")
+            cur_e++; 
+            
+            if (cur_e==e_sz) alert("Victory!")
+
         } else {
         // mob won
             hp = Math.max(0,hp);
-            if(hp<=0) alert("Game Over!");
+            if(hp<=0) 
+                    alert("Game Over!");
         } 
         if (evs[cur_e][IMHP]>0 && hp>0)
         {
@@ -483,16 +529,62 @@ var dns = function()
         // start location 
         e_tp=[
             ["Village", "Your adventure start here. Choose your class:", "Rogue", "Warrior", "Mage","Monk" , "Healer",
-        function(){ PlayerClass=1; cur_e++ }, 
-        function(){ PlayerClass=2; cur_e++ }, 
-        function(){ PlayerClass=3; cur_e++ },
-        function(){ PlayerClass=4; cur_e++ },  
-        function(){ PlayerClass=5; cur_e++ }, 
+            // set class bonuses for traits ?
+        function(){ PlayerClass=1;
+
+            // rogue - high greed, high eva, high crit,good poison
+        SetTraitKeyValue("Camping",  1),
+        SetTraitKeyValue("Prayer",  1),
+        SetTraitKeyValue("Evasion",  10),
+        SetTraitKeyValue("Greed",  20);   
+        SetTraitKeyValue("Critical Strike",  35) 
+        SetTraitKeyValue("Poison",  7) 
+        cur_e++ }, 
+
+        function(){ PlayerClass=2;
+            //warrior - good rest, normal crit
+        SetTraitKeyValue("Camping",  1.2),
+        SetTraitKeyValue("Prayer",  1.1),
+        SetTraitKeyValue("Evasion",  5),
+        SetTraitKeyValue("Greed",  10);   
+        SetTraitKeyValue("Critical Strike",  25) 
+        SetTraitKeyValue("Poison",  4) 
+
+         cur_e++ }, 
+        function(){ PlayerClass=3;
+            //mage - more greed, bad crits, good poison
+        SetTraitKeyValue("Camping",  1.1),
+        SetTraitKeyValue("Prayer",  1.2),
+        SetTraitKeyValue("Evasion",  3),
+        SetTraitKeyValue("Greed",  15);   
+        SetTraitKeyValue("Critical Strike",  15) 
+        SetTraitKeyValue("Poison",  8) 
+         cur_e++ },
+        function(){ PlayerClass=4; 
+            // monk - no greed, good eva, low poison, good crit
+        SetTraitKeyValue("Camping",  1.4),
+        SetTraitKeyValue("Prayer",  1.4),
+        SetTraitKeyValue("Evasion",  15),
+        SetTraitKeyValue("Greed",  0);   
+        SetTraitKeyValue("Critical Strike",  35) 
+        SetTraitKeyValue("Poison",  5) 
+        cur_e++ },  
+        function(){ 
+            // good restore / poisons
+            PlayerClass=5; 
+        SetTraitKeyValue("Camping",  2.5),
+        SetTraitKeyValue("Prayer",  2.0),
+        SetTraitKeyValue("Evasion",  3),
+        SetTraitKeyValue("Greed",  7);   
+        SetTraitKeyValue("Critical Strike",  15) 
+        SetTraitKeyValue("Poison",  12) 
+        cur_e++ }, 
          ,nxt
 
     ],
 
     // locations for all : shop { heal, pots, upgrade weapon/armor }
+    //bonus for wizards - extra pot on max heal, extra max hp, also training give more to wiz
     ["Shop", "Wizard provides his services", "Buy Potion $20", "Full Heal $100", "Leave","Enchant Weapon $50","Enchant Armor 50$",
         function(){ if(gld>=20 ) { gld-=20; pot++} },
         function(){ if(gld>=100) { gld-=100; hp=MaxHP} }, nxt ,
@@ -507,20 +599,43 @@ var dns = function()
     var HealPower=1;      // 1 = 100%, for mage, warrior -  1.1; for monk, cleric 1.3 ( 1.4 -> 1.5 -> 1.6 after skill lvl up ), 1 for rogue
     var CanUseHeal=0;     // 0 = no heal after fight, 1 = small heal (warrior,  monk) , 2 = big heal after fight (Cleric)
 */
-    ["Church", "Cleric provides his services", "Buy Potion $20", "Full Heal $50", "Leave","Learn 'Prayer'" , "Improve Healing",
+// bonus for clerics / monks ? 
+    ["Church", "Cleric provides his services", "Buy Potion $20", "Full Heal $50", "Leave","Learn 'Greed'" , "Improve 'Camping'",
         function(){ if(gld>=20 )  { gld-=20; pot++} },
-        function(){ if(gld>=100)  { gld-=100; hp=MaxHP} }, nxt ,
-        function(){ if(gld>=50 )  { gld-=50; Vampirism+=1; MaxHP+=1; } },
-        function(){ if(gld>=200 ) { ImproveTrait("Camping"); } },
+        function(){ if(gld>=100)  { gld-=100; hp=MaxHP; } }, nxt ,
+        function(){ if(gld>=50 )  { gld-=50; ImproveTrait("Greed");} },
+        function(){ if(gld>=100 ) { gld-=100;ImproveTrait("Camping"); } },
+        nxt, 
+
+    ],
+        // bonus for all ? 
+        ["Hunter", "Strong huntsman can teach you something", "Drink herbal tea $10", "Learn 'Poison' $100", "Leave" , "Learn 'Camo' $50" , "Improve 'Camping' $100",
+        function(){ if(gld>=10 )  { gld-=10; MaxHP += 5; } },
+        function(){ if(gld>=100)  { gld-=100; ImproveTrait("Poison"); } },
+         nxt ,
+        function(){ if(gld>=50 )  { gld-=50;  ImproveTrait("Evasion");  } },
+        function(){ if(gld>=100 ) { gld -=100; ImproveTrait("Camping"); } },
         
         nxt, 
 
     ],
         
+["Poor person", "He asks you to help him", "Sell HP pot +$25", "Make Quest", "Leave" , "Train Him" , " - ",
+        function(){ if(gld>=10 )  { gld-=10; MaxHP += 5; } },
+        function(){ if(gld>=100)  { gld-=100; ImproveTrait("Poison"); } },
+         nxt ,
+        function(){ if(gld>=50 )  { gld-=50;  ImproveTrait("Evasion");  } },
+        ,
+        
+        nxt, 
+
+    ],
+        
+
         // locations for Rogue : shop { attackpower, hide chance,  steal chance }
-    ["Ninja", "He can train rogue powers", "Rogue Practice $50", "Dagger Mastery 50$", "Leave","Learn 'How-to-Spoil'","Learn 'Hide'",
-        function(){ if(gld>=50)  {gld-=50; AtkBonus+=2 ; DefBonus+=2; Evasion+=2;} },
-        function(){ if(gld>=50 && isRogue() && CriticalMultiplier <= 5)  {gld-=50; CriticalMultiplier+=1/10; } },
+    ["Ninja", "He can train rogue powers", "Weapon Practice $50", "Critical Strike - 100$", "Leave","Learn 'How-to-Spoil'","Learn 'Hide'",
+        function(){ if(gld>=50)  { gld-=50; AtkBonus+=2 ; DefBonus+=2; Evasion+=2;} },
+        function(){ if(gld>=50)  { gld-=50; ImproveTrait("Critical Strike");; } },
         nxt,
         function(){ if(gld>=300 && StealChance() <90 && isRogue()) {gld-=300; StealAddChance+=5} },
         function(){ if(gld>=300 && SneakChance() <90 && isRogue()) {gld-=300; SneakAddChance+=5;} },
@@ -572,12 +687,13 @@ var dns = function()
         
         // monsters: from strong - to weak
 
-    ["SawMan", "Huge man with a saw, it's really danger"].concat(battle,130,30,55,200),
+    ["SawMan", "Huge man with a saw, it's really danger"].concat(battle,160,30,50,200),
     ["Skeleton", "A terrible skeleton on your way"].concat(battle,80,15,20,100),
     ["Goblin", "Green goblin wants to get your money"].concat(battle,65,10,15,70),
     ["Giant ant", "Damn! That insects...."].concat(battle,55,15,15,70+Math.floor(Math.random()*20)),
     ["Werewolf", "Dark werewolf trying to bite you"].concat(battle,50,15,15,50+Math.floor(Math.random()*40)),
     ["Slime", "What the strange jelly monster?"].concat(battle,20+R20(),3,7,30),
+    ["Big slime", "What the strange jelly monster?"].concat(battle,30+R20(),5,9,35),
     MobToElements( new monster("Zombie", 50, 10, 33, 50, 1) ),
     MobToElements( new monster("Imp", 70, 25, 35,  80, 1) ),
     MobToElements( new monster("Lizard", 60, 16, 16, 50, 1) ),
