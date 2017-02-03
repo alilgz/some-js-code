@@ -37,6 +37,28 @@ var Skill = {
 
 };
 
+
+var Buttons = {
+ counter : [0,0,0,0,0],
+ Reset : function(){
+    counter[0] = 0;
+    counter[1] = 0;
+    counter[2] = 0;
+    counter[3] = 0;
+    counter[4] = 0;
+ },
+
+ Get: function (num){
+    return Buttons.counter[num];
+ },
+
+ Count: function (num){
+     Buttons.counter[num]++;
+     console.log('saved click on ', num,  '  = ',  Buttons.counter[num]);
+ }
+
+}
+
  
 var Player = {
       Class:0,
@@ -113,8 +135,12 @@ Player.UpdateClassName=function(){
     }  
 
 
- Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold)
+ Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold, button_num, maxTimesAllowed)
     {
+
+        
+    if (Buttons.Get(button_num) >= maxTimesAllowed)
+                return;
 
         if (cost == 0 || cost<Player.Gold)
         {
@@ -124,6 +150,8 @@ Player.UpdateClassName=function(){
                 Player.AtkBonus+=AddAtk;
                 Player.DefBonus+=AddDef;
                 Player.Gold+=AddGold;
+                // count how many timespressed
+                Buttons.Count(button_num);
         }
     }
 
@@ -550,7 +578,6 @@ var dns = function()
 
     var ActionForClass = function(FuncRogue, FuncWarrior, FuncWizard, FuncHealer, FuncMonk)
     {
-
         //console.log("[FuncForClass | pc]= ", Player.Class);
 
            if (Player.Class == 1) 
@@ -699,11 +726,11 @@ var dns = function()
         // var DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold){
         //"Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
         function(){return ActionForClass( 
-            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0); },  // rog 
-            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0); },  //war
-            function(){ return Player.DoTraining(100, 0,0, 6, 0, 0); },   //wiz
-            function(){ return Player.DoTraining(50, 0,0, 4, 0, 0); },  // heal
-            function(){ return Player.DoTraining(50, 4,0, 2, 0, 0); }  // monk
+            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0, 1,3); },  // rog 
+            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0, 1,3); },  //war
+            function(){ return Player.DoTraining(100, 0,0, 6, 0, 1,3); },   //wiz
+            function(){ return Player.DoTraining(50, 0,0, 4, 0, 1,3); },  // heal
+            function(){ return Player.DoTraining(50, 4,0, 2, 0, 0,1,1 ); }  // monk
         )},
 
         //"Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
