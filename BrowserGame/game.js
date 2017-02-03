@@ -20,26 +20,27 @@ var Skill = {
 // just one place to keep all names written ONCE
     
     Camping:"Camping",
-    Prayer:"Potion Mastery",
+    Prayer:"Healing",
     Evasion:"Evasion",
     Greed:"Greed",
     Criticals:"Critical Strike",
     Poison:"Poison", 
-
-    Shield:"Shield Mastery",
+    Shield:"Shielding",
     Reflect:"Reflect",
-    Traps:"Traps mastery",
-    ArcaneMastery:"Arcane Mastery",
+    Traps:"Traps",
+    ArcaneMastery:"Spellcasting",
     VR:"Vampiric",
     OverHit:"OverHit!",
     Cripple:"Cripple",
     PotionMastery:"Potion Craft",
-
 };
-
+var Archetype = {
+    Rogue:1, Warrior:2, Wizard:3, Monk:4, Healer:5
+};
 
 var Buttons = {
  counter : [0,0,0,0,0],
+ 
  Reset : function(){
     counter[0] = 0;
     counter[1] = 0;
@@ -57,7 +58,7 @@ var Buttons = {
      console.log('saved click on ', num,  '  = ',  Buttons.counter[num]);
  }
 
-}
+};
 
  
 var Player = {
@@ -125,11 +126,11 @@ Player.UpdateClassName=function(){
         if (Player.Level>10){ add="Expert ";}
         switch(Player.Class){
         case 0 :  Player.ClassName = add ; break;
-        case 1 :  Player.ClassName = add + "Rogue"; ;     break;
-        case 2 :  Player.ClassName = add + "Warrior";  break;
-        case 3 :  Player.ClassName = add + "Mage";    break;
-        case 4 :  Player.ClassName = add + "Monk";    break;
-        case 5 :  Player.ClassName = add + "Healer";  break;
+        case Archetype.Rogue   :  Player.ClassName = add + "Rogue"; ; break;
+        case Archetype.Warrior :  Player.ClassName = add + "Warrior"; break;
+        case Archetype.Wizard  :  Player.ClassName = add + "Mage";    break;
+        case Archetype.Monk    :  Player.ClassName = add + "Monk";    break;
+        case Archetype.Healer  :  Player.ClassName = add + "Healer";  break;
         Player.ClassName =  add+"unknown";
         }
     }  
@@ -137,7 +138,6 @@ Player.UpdateClassName=function(){
 
  Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold, button_num, maxTimesAllowed)
     {
-
         
     if (Buttons.Get(button_num) >= maxTimesAllowed)
                 return;
@@ -204,14 +204,18 @@ console.log('begin');
         //warrior        
         [Skill.Shield,  5, "5-25% more effect from armor", 1], 
         [Skill.Reflect,  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+
         //rogue    
          [Skill.Traps,  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+
         //Wizard
         [Skill.ArcaneMastery,  2, "First nuke do x2/x2.25/x2.5/x2.75/x3 Damage", 1], 
         [Skill.VR,  2, "restoring  2-10% from damage inflicted", 1], 
+
         //Monk
         [Skill.OverHit,  2, "If damage  x2 more  from mob HP left - get 20% exp bonus", 1], 
         [Skill.Cripple,  30, "If attack crits -  mob damage - decreased for penalty 30%-60%", 1], 
+
         //Healer
         [Skill.PotionMastery,  20, " 20-80% chance to get 1 pot from each monster", 1]
 
@@ -233,6 +237,20 @@ console.log('begin');
 
     }
 
+    var GetHintFor = function(index){
+        //return visible hint #i
+        var num=0;
+    for (var i = 0; i < Traits.length ; i++) 
+    {
+          if (Traits[i][1]!=0)  {
+            if (num == index)
+                    return Traits[i][2] ;
+            num++;
+          }
+    }
+
+        return "";
+    }
 
  var IsTraitEnabled = function(traitName)   {
 
@@ -305,26 +323,27 @@ var GetTraitValue = function(traitName)   {
 
 
 
+        var j =Traits.length - 1;
 
-        var VisibleTraitCount=Traits.length;
+         for (var i = Traits.length - 1; i >= 0; i--) 
+            if (Traits[i][1]==0)   
+                j--;
+
         for (var i = Traits.length - 1; i >= 0; i--) {
 
-              if (Traits[i][1]==0)  
-                VisibleTraitCount--;
-        }
-
-        for (var i = VisibleTraitCount -1 ; i >= 0; i--) 
-        {
-             if (Traits[i][1]!=0)  
-             {
-                ctx.strokeRect(i*(iconSpaceX + iconWidth)+5,560,iconWidth,iconHeight);
+              if (Traits[i][1]!=0)  
+              {
+                ctx.strokeRect( j*(iconSpaceX + iconWidth) + 5 , 560 ,iconWidth,iconHeight);
                 ctx.fillStyle = "blue";
-                ctx.fillText(Traits[i][3], 0+ i*(iconSpaceX + iconWidth)+7, 560+11);
+                ctx.fillText(Traits[i][3], 2 + j*(iconSpaceX + iconWidth)+7, 560+11);
                 ctx.fillStyle = "red";
-                ctx.fillText(Traits[i][0], 10+ i*(iconSpaceX + iconWidth)+7, 560+11);
-                ctx.fillText(" ",i*(iconSpaceX + iconWidth)+7, 560+22);
+                ctx.fillText(Traits[i][0], 10 + j*(iconSpaceX + iconWidth)+7, 560+11);
+                ctx.fillText(" " , j*(iconSpaceX + iconWidth)+7, 560+22);
+                j--;
+        
             }
         }
+        
 
         ctx.fillStyle = "red";
         ctx.fillText(Hint, 0 * (iconSpaceX + iconWidth)+7, 590);
@@ -515,29 +534,41 @@ var dns = function()
  
   var InitClassMasteries = function()
   {
+
     Player.UpdateClassName();
-    if ( Player.Class != 2){
-        SetTraitKeyValue("Shield Mastery",  0) ;
-        SetTraitKeyValue("Reflect",  0) ;
-    }
-    if (Player.Class != 3)
+    console.log(Player.Class);
+
+    if ( Player.Class != Archetype.Warrior)
     {
-        SetTraitKeyValue("Arcane Mastery",  0) ;
-        SetTraitKeyValue("Vampiric",  0) ;
+        console.log("Hide warrior");
+        SetTraitKeyValue(Skill.Shield,  0) ;
+        SetTraitKeyValue(Skill.Reflect,  0) ;
     }
-    if (Player.Class!=1)
+    
+    if (Player.Class != Archetype.Wizard)
     {
-       SetTraitKeyValue("Traps mastery",  0) ;
+        console.log("Hide wiz");
+        SetTraitKeyValue(Skill.ArcaneMastery,  0) ;
+        SetTraitKeyValue(Skill.VR,  0) ;
+    }
+    
+    if (Player.Class!=Archetype.Rogue)
+    {
+        console.log("Hide rog");
+       SetTraitKeyValue(Skill.Traps,  0) ;
     }
         
     if (Player.Class!=4)
     {
-    SetTraitKeyValue("OverHit!",  0) ;
-    SetTraitKeyValue("Cripple",  0) ;
+        console.log("Hide Monk");
+        SetTraitKeyValue(Skill.OverHit,  0) ;
+        SetTraitKeyValue(Skill.Cripple,  0) ;
     }
 
-    if (Player.Class != 5){
-        SetTraitKeyValue("Potion mastery",  0) ;
+    if (Player.Class != 5)
+    {
+        console.log("Hide heal");
+        SetTraitKeyValue(Skill.PotionMastery,  0) ;
     }
 
   };
@@ -638,8 +669,7 @@ var dns = function()
             ["Village", "Your adventure start here. Choose your class:", "Rogue", "Warrior", "Mage","Monk" , "Healer",
             // set class bonuses for traits ?
         function(){ 
-            Player.Class=1;
-
+            Player.Class=Archetype.Rogue;
             // rogue - high greed, high eva, high crit,good poison
         SetTraitKeyValue("Camping",  1),
         SetTraitKeyValue("Prayer",  1),
@@ -652,31 +682,34 @@ var dns = function()
 
         cur_e++ }, 
 
-        function(){ Player.Class=2;
+        function(){ 
+            Player.Class=Archetype.Warrior;
             //warrior - good rest, normal crit
         SetTraitKeyValue("Camping",  1.2),
         SetTraitKeyValue("Prayer",  1.1),
-        SetTraitKeyValue("Evasion",  5),
-        SetTraitKeyValue("Greed",  10);   
-        SetTraitKeyValue("Critical Strike",  25) 
-        SetTraitKeyValue("Poison",  4) 
+        SetTraitKeyValue(Skill.Evasion,  0),
+        SetTraitKeyValue(Skill.Greed,  10);   
+        SetTraitKeyValue(Skill.Criticals,  25) 
+        SetTraitKeyValue(Skill.Poison,  4) 
          // hide extra Traits
         InitClassMasteries();
 
          cur_e++ }, 
-        function(){ Player.Class=3;
+        function(){ 
+            Player.Class=Archetype.Wizard;
             //mage - more greed, bad crits, good poison
-        SetTraitKeyValue("Camping",  1.1),
+        SetTraitKeyValue(Skill.Camping,  1.1),
         SetTraitKeyValue("Prayer",  1.2),
-        SetTraitKeyValue("Evasion",  3),
+        SetTraitKeyValue(Skill.Evasion,  3),
         SetTraitKeyValue("Greed",  15);   
         SetTraitKeyValue("Critical Strike",  15) 
         SetTraitKeyValue("Poison",  8) 
         InitClassMasteries();
          cur_e++ },
-        function(){ Player.Class=4; 
+        function(){ 
+            Player.Class=Archetype.Monk; 
             // monk - no greed, good eva, low poison, good crit
-        SetTraitKeyValue("Camping",  1.4),
+        SetTraitKeyValue(Skill.Camping,  1.4),
         SetTraitKeyValue("Prayer",  1.4),
         SetTraitKeyValue("Evasion",  15),
         SetTraitKeyValue("Greed",  0);   
@@ -686,7 +719,7 @@ var dns = function()
         cur_e++ },  
         function(){ 
             // good restore / poisons
-            Player.Class=5; 
+            Player.Class=Archetype.Healer; 
         SetTraitKeyValue("Camping",  2.5),
         SetTraitKeyValue("Prayer",  2.0),
         SetTraitKeyValue("Evasion",  3),
@@ -979,10 +1012,10 @@ var dns = function()
             {
             for (var i=Traits.length-1; i>=0; i--)
                 {
-                 //console.log("move" + e.offsetX +':'+e.offsetY );
+                 
                 if ( i*(iconSpaceX + iconWidth)+5  <= e.offsetX &&  e.offsetX  < i*(iconSpaceX + iconWidth)+5 + iconWidth  && 560 <= e.offsetY && e.offsetY < 560 + iconHeight )
                         {
-                            Hint =Traits[i][1] +""+ Traits[i][2];
+                            Hint = GetHintFor(i) ; //Traits[i][1] +""+ Traits[i][2];
                         }
                 }
             }
