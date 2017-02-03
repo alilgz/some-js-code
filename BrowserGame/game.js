@@ -16,6 +16,27 @@
 //5: better interface + icons
 //6: rewrite with outer functions
 
+var Skill = {
+// just one place to keep all names written ONCE
+    
+    Camping:"Camping",
+    Prayer:"Potion Mastery",
+    Evasion:"Evasion",
+    Greed:"Greed",
+    Criticals:"Critical Strike",
+    Poison:"Poison", 
+
+    Shield:"Shield Mastery",
+    Reflect:"Reflect",
+    Traps:"Traps mastery",
+    ArcaneMastery:"Arcane Mastery",
+    VR:"Vampiric",
+    OverHit:"OverHit!",
+    Cripple:"Cripple",
+    PotionMastery:"Potion Craft",
+
+};
+
  
 var Player = {
       Class:0,
@@ -51,14 +72,14 @@ var Player = {
             return  Math.floor(Player.AtkBonus/Player.Level + Player.Level*3 + 6 + Player.AtkBonus/3);
         },
         isMonk : function(){
-        return Player.PlayerClass==4;
+        return Player.Class==4;
     },
 
     isWarrior : function(){
-        return Player.PlayerClass==2;
+        return Player.Class==2;
     },
     isMage : function(){
-        return Player.PlayerClass==3;
+        return Player.Class==3;
     }
 
     };
@@ -67,10 +88,10 @@ var Player = {
 // less usable
   
     Player.isRogue = function(){
-        return Player.PlayerClass==1;
+        return Player.Class==1;
     }
     Player.isCleric = function(){
-        return Player.PlayerClass==5;
+        return Player.Class==5;
     }
 
 
@@ -80,19 +101,21 @@ Player.UpdateClassName=function(){
         if (Player.Level>4){ add="Trained ";}
         if (Player.Level>7){ add="Mighty ";}
         if (Player.Level>10){ add="Expert ";}
-        
-        if (Player.PlayerClass==0){ Player.ClassName = add ;}
-        if (Player.PlayerClass==1){ Player.ClassName = add + "Rogue"; ;     }
-        if (Player.PlayerClass==2){ Player.ClassName = add + "Warrior";  }
-        if (Player.PlayerClass==3){ Player.ClassName = add + "Mage";    }
-        if (Player.PlayerClass==4){ Player.ClassName = add + "Monk";    } 
-        if (Player.PlayerClass==5){ Player.ClassName = add + "Healer";  }
+        switch(Player.Class){
+        case 0 :  Player.ClassName = add ; break;
+        case 1 :  Player.ClassName = add + "Rogue"; ;     break;
+        case 2 :  Player.ClassName = add + "Warrior";  break;
+        case 3 :  Player.ClassName = add + "Mage";    break;
+        case 4 :  Player.ClassName = add + "Monk";    break;
+        case 5 :  Player.ClassName = add + "Healer";  break;
         Player.ClassName =  add+"unknown";
+        }
     }  
 
 
  Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold)
     {
+
         if (cost == 0 || cost<Player.Gold)
         {
                 Player.Gold-=cost;
@@ -143,26 +166,26 @@ console.log('begin');
 
     // passive 'skills'
     // name,  key value, description, level, enabled, etc ]
-        ["Camping",  1, "Restore health after fight", 1 ],
-        ["Prayer",  1, "Additional health restored from potions", 1],
-        ["Evasion",  10, "% Chance to avoid monster attack", 1],
-        ["Greed",  10, "% Chance to find x2 gold", 1],
-        ["Critical Strike",  30, "% Chance to make critical x2 attack", 1], 
-        ["Poison",  5, "% Additional damage", 1], 
+        [ Skill.Camping,  1, "Restore health after fight", 1 ],
+        [Skill.Prayer,  1, "Additional health restored from potions", 1],
+        [Skill.Evasion,  10, "% Chance to avoid monster attack", 1],
+        [Skill.Greed,  10, "% Chance to find x2 gold", 1],
+        [Skill.Criticals,  30, "% Chance to make critical x2 attack", 1], 
+        [Skill.Poison,  5, "% Additional damage", 1], 
 
         //warrior        
-        ["Shield Mastery",  5, "5-25% more effect from armor", 1], 
-        ["Reflect",  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+        [Skill.Shield,  5, "5-25% more effect from armor", 1], 
+        [Skill.Reflect,  1, " 1-2-3-4-5% chance reflect full damage", 1], 
         //rogue    
-         ["Traps mastery",  1, " 1-2-3-4-5% chance reflect full damage", 1], 
+         [Skill.Traps,  1, " 1-2-3-4-5% chance reflect full damage", 1], 
         //Wizard
-        ["Arcane Mastery",  2, "First nuke do x2/x2.25/x2.5/x2.75/x3 Damage", 1], 
-        ["Vampiric",  2, "restoring  2-10% from damage inflicted", 1], 
+        [Skill.ArcaneMastery,  2, "First nuke do x2/x2.25/x2.5/x2.75/x3 Damage", 1], 
+        [Skill.VR,  2, "restoring  2-10% from damage inflicted", 1], 
         //Monk
-        ["OverHit!",  2, "If damage  x2 more  from mob HP left - get 20% exp bonus", 1], 
-        ["Cripple",  30, "If attack crits -  mob damage - decreased for penalty 30%-60%", 1], 
+        [Skill.OverHit,  2, "If damage  x2 more  from mob HP left - get 20% exp bonus", 1], 
+        [Skill.Cripple,  30, "If attack crits -  mob damage - decreased for penalty 30%-60%", 1], 
         //Healer
-        ["Potion mastery",  20, " 20-80% chance to get 1 pot from each monster", 1]
+        [Skill.PotionMastery,  20, " 20-80% chance to get 1 pot from each monster", 1]
 
     ];
 
@@ -172,10 +195,10 @@ console.log('begin');
         {
             if ( Traits[i][0] == traitName){
 
-                if (Traits[i][3]<9 && gld>=cost)
+                if (Traits[i][3]<5 && Player.Gold>=cost)
                 {
                     Traits[i][3]++; 
-                    gld-=cost;
+                    Player.Gold-=cost;
                 } 
             }
         }
@@ -351,7 +374,7 @@ var GetTraitValue = function(traitName)   {
 
     var hit = function(){
 
-        console.log("[Hit]  player class=", PlayerClass);
+        //console.log("[Hit]  player class=", PlayerClass);
 
         var PlayerDidDamage = calcDMGFromPlayer(Player.Atk(),evs[cur_e][IMAtk]/5, evs[cur_e][IMHP]); 
         var PlayerGotDamage = calcDMGFromMob(evs[cur_e][IMAtk],Player.Def(),Player.HP) ;
@@ -420,7 +443,8 @@ var GetTraitValue = function(traitName)   {
 //sneak  mob
 var skp = function()
 { 
-    if (SneakChance() < Math.floor(Math.random(100)))
+    //SneakChance()
+    if (100 < Math.floor(Math.random(100)))
     {
         //accident
         hp-=10;
@@ -463,50 +487,51 @@ var dns = function()
  
   var InitClassMasteries = function()
   {
-
-    if ( Player.PlayerClass != 2){
+    Player.UpdateClassName();
+    if ( Player.Class != 2){
         SetTraitKeyValue("Shield Mastery",  0) ;
         SetTraitKeyValue("Reflect",  0) ;
     }
-    if (Player.PlayerClass != 3)
+    if (Player.Class != 3)
     {
         SetTraitKeyValue("Arcane Mastery",  0) ;
         SetTraitKeyValue("Vampiric",  0) ;
     }
-    if (Player.PlayerClass!=1)
+    if (Player.Class!=1)
     {
        SetTraitKeyValue("Traps mastery",  0) ;
     }
         
-    if (Player.PlayerClass!=4)
+    if (Player.Class!=4)
     {
     SetTraitKeyValue("OverHit!",  0) ;
     SetTraitKeyValue("Cripple",  0) ;
     }
 
-    if (Player.PlayerClass != 5){
+    if (Player.Class != 5){
         SetTraitKeyValue("Potion mastery",  0) ;
     }
 
   };
 
+ 
 
     var ButtonAttack = function()
     {
-        if (Player.PlayerClass==1)
+        if (Player.Class==1)
              return "Stab";
-        if (Player.PlayerClass==3)
+        if (Player.Class==3)
              return "Nuke";
-        if (Player.PlayerClass==4)
+        if (Player.Class==4)
              return "Kick";
          
         return "Attack";
     }
 
     var ButtonSneak = function(){
-        if (Player.PlayerClass==1)
+        if (Player.Class==1)
              return "Sneak 75%";
-        if (Player.PlayerClass==3 || Player.PlayerClass==5 )
+        if (Player.Class==3 || Player.Class==5 )
              return "Sneak 5%";
         return "Sneak 40%";
     }
@@ -521,24 +546,49 @@ var dns = function()
 
    
 
-    var TitleForClass = function( TitleRogue, TitleWarrior, TitleWizard, TitleHealer, TitleMonk)
+
+
+    var ActionForClass = function(FuncRogue, FuncWarrior, FuncWizard, FuncHealer, FuncMonk)
     {
 
-        console.log("[pc]= ", Player.PlayerClass);
+        //console.log("[FuncForClass | pc]= ", Player.Class);
 
-           if (Player.PlayerClass == 1) 
+           if (Player.Class == 1) 
+              FuncRogue();
+
+           if (Player.Class == 2) 
+              FuncWarrior();
+
+           if (Player.Class == 3) 
+             FuncWizard();
+
+           if (Player.Class == 4) 
+             FuncMonk();
+
+           if (Player.Class == 5) 
+             FuncHealer();
+
+    }
+
+    var TitleForClass = function(TitleRogue, TitleWarrior, TitleWizard, TitleHealer, TitleMonk)
+    {
+
+        //console.log("[TitleForClass | pc]= ", Player.Class);
+
+           if (Player.Class == 1) 
              return TitleRogue;
-           if (Player.PlayerClass == 2) 
+           if (Player.Class == 2) 
              return TitleWarrior;
-           if (Player.PlayerClass == 3) 
+           if (Player.Class == 3) 
              return TitleWizard;
 
-           if (Player.PlayerClass == 4) 
-             return TitleHealer;
-           if (Player.PlayerClass == 5) 
+           if (Player.Class == 4) 
              return TitleMonk;
 
-         return "WTF??";
+           if (Player.Class == 5) 
+             return TitleHealer;
+
+         return "WTF";
     }
 
 
@@ -561,7 +611,7 @@ var dns = function()
             ["Village", "Your adventure start here. Choose your class:", "Rogue", "Warrior", "Mage","Monk" , "Healer",
             // set class bonuses for traits ?
         function(){ 
-            PlayerClass=1;
+            Player.Class=1;
 
             // rogue - high greed, high eva, high crit,good poison
         SetTraitKeyValue("Camping",  1),
@@ -575,7 +625,7 @@ var dns = function()
 
         cur_e++ }, 
 
-        function(){ PlayerClass=2;
+        function(){ Player.Class=2;
             //warrior - good rest, normal crit
         SetTraitKeyValue("Camping",  1.2),
         SetTraitKeyValue("Prayer",  1.1),
@@ -587,7 +637,7 @@ var dns = function()
         InitClassMasteries();
 
          cur_e++ }, 
-        function(){ PlayerClass=3;
+        function(){ Player.Class=3;
             //mage - more greed, bad crits, good poison
         SetTraitKeyValue("Camping",  1.1),
         SetTraitKeyValue("Prayer",  1.2),
@@ -597,7 +647,7 @@ var dns = function()
         SetTraitKeyValue("Poison",  8) 
         InitClassMasteries();
          cur_e++ },
-        function(){ PlayerClass=4; 
+        function(){ Player.Class=4; 
             // monk - no greed, good eva, low poison, good crit
         SetTraitKeyValue("Camping",  1.4),
         SetTraitKeyValue("Prayer",  1.4),
@@ -609,7 +659,7 @@ var dns = function()
         cur_e++ },  
         function(){ 
             // good restore / poisons
-            PlayerClass=5; 
+            Player.Class=5; 
         SetTraitKeyValue("Camping",  2.5),
         SetTraitKeyValue("Prayer",  2.0),
         SetTraitKeyValue("Evasion",  3),
@@ -628,31 +678,48 @@ var dns = function()
 
 
       // rog, war, wiz, heal, monk
-        TitleForClass( "Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
-        TitleForClass("Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
+        function(){ return TitleForClass(
+            "Upgrade Weapon $50",
+             "Upgrade Weapon $50",
+             "Enchant Weapon $90 ",
+             "Upgrade Weapon $40",
+             "Practice with Hammer")}, 
+               
+
+        function(){ return TitleForClass(
+             "Improve Armor $50",
+             "Improve Armor $50",
+             " - " ,
+             " - " ,
+             " - " )}, 
         "Leave",
-        function(){ console.log( 'CRAP = ', Player.PlayerClass); return TitleForClass( "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - ")}, 
-        TitleForClass("-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work"), 
+
+        function(){ return TitleForClass( "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - ")}, 
+        function(){ return TitleForClass("-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work")}, 
         // var DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold){
-        
-        function(){TitleForClass( //"Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
-            function(){ DoTraining(50, 0,0, 6, 0, 0); },  // rog 
-            function(){ DoTraining(50, 0,0, 6, 0, 0); },  //war
-            function(){ DoTraining(100, 0,0, 6, 0, 0); },   //wiz
-            function(){ DoTraining(50, 0,0, 4, 0, 0); },  // heal
-            function(){ DoTraining(50, 4,0, 2, 0, 0); }  // monk
+        //"Weapon Training $50", "Weapon Training $50","Enchant Weapon $100", "Basic Training $50", "Basic Training $50"), //      "Basic Training $50", 
+        function(){return ActionForClass( 
+            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0); },  // rog 
+            function(){ return Player.DoTraining(50, 0,0, 6, 0, 0); },  //war
+            function(){ return Player.DoTraining(100, 0,0, 6, 0, 0); },   //wiz
+            function(){ return Player.DoTraining(50, 0,0, 4, 0, 0); },  // heal
+            function(){ return Player.DoTraining(50, 4,0, 2, 0, 0); }  // monk
         )},
 
-        function(){TitleForClass( //"Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
-            function(){ DoTraining(50, 0,0, 0, 4, 0); },  // rog 
-            function(){ DoTraining(50, 2,0, 0, 4, 0); },  //war
+        //"Improve Armor $50", "Improve Armor  $50"," - ", " - ", " - "), 
+        function(){return ActionForClass( 
+            function(){ return Player.DoTraining(50, 0,0, 0, 4, 0); },  // rog 
+            function(){ return Player.DoTraining(50, 2,0, 0, 4, 0); },  //war
             nop,   //wiz
             nop,  // heal
             nop  // monk
         )},
         
         nxt, // leave
-        function(){TitleForClass( // "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - "), 
+         
+         // "Learn 'Criticals' $100","Shielding Lesson  $100", " - ", "Learn 'Criticals' $100", " - "), 
+
+        function(){return ActionForClass(
             function(){ ImproveTrait("Critical Strike", 100); },  // rog 
             function(){ ImproveTrait("Shield Mastery", 100); },  //war
             nop,   //wiz
@@ -660,12 +727,12 @@ var dns = function()
             nop  // monk
         )},
 
-        function(){ TitleForClass(//"-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work"), 
+        function(){ return ActionForClass(//"-", "Help with Work +$50", "Help with Work +$50", "Heal his horse +$50", "Do hard work"), 
             nop,  // rog 
-            function(){ DoTraining(0, 0,-2, 0, 0, 50); },  //war
-            function(){ DoTraining(0, 0,0, 0, 0, 50); },   //wiz
-            function(){ DoTraining(0, 0,0, 0, 0, 50); },  // heal
-            function(){ DoTraining(0, 4,-2, 2, 0, 0); }  // monk
+            function(){ Player.DoTraining(0, 0,-2, 0, 0, 50); },  //war
+            function(){ Player.DoTraining(0, 0,0, 0, 0, 50); },   //wiz
+            function(){ Player.DoTraining(0, 0,0, 0, 0, 50); },  // heal
+            function(){ Player.DoTraining(0, 4,-2, 2, 0, 0); }  // monk
         )}
 
      ],
@@ -852,15 +919,20 @@ var dns = function()
     
     document.addEventListener('click', function(e)
     {
+
         if (hp>0)
 
             for (var i=0;i<5;i++)
 
                 if ( 
                      i*120+5 <= e.offsetX &&  e.offsetX  < i*120+115  && 460 <= e.offsetY && e.offsetY<460+20)
-                       { evs[cur_e][i+7](); }
+                       { 
+                        console.log('click button #',i, evs[cur_e][i+7]);
+                        
+                        evs[cur_e][i+7](); 
+                        }
                    else {
-                   //     console.log("click" + e.offsetX +':'+e.offsetY + ' vs '+ (i*120+5)+':'+460);
+                    //     console.log("click" + e.offsetX +':'+e.offsetY + ' vs '+ (i*120+5)+':'+460);
 
                    }
     }, false);
