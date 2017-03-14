@@ -18,7 +18,6 @@
 
 var Skill = {
 // just one place to keep all names written ONCE
-    
     Camping:"Camping",
     Prayer:"Healing",
     Evasion:"Evasion",
@@ -34,6 +33,7 @@ var Skill = {
     Cripple:"Cripple",
     PotionMastery:"Potion Craft",
 };
+
 var Archetype = {
     Rogue:1, Warrior:2, Wizard:3, Monk:4, Healer:5
 };
