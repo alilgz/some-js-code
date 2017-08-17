@@ -186,7 +186,7 @@ var Location =
 
 var Game = {
     cur_e:0,
-    GameMap=[],
+    GameMap:[],
     FirstAttack:1, // is first attack per round
     nop : function(){ ; },
     leave : function(){
