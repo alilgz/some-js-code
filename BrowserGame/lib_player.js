@@ -57,7 +57,7 @@ var Player = {
         var BaseDef = Math.floor(Player.Level*2 + Player.DefBonus);
         var FullDef =  BaseDef  + (BaseDef * GetTraitValue(Skill.Shield) / 100) ;
 
-        return Math.min(200, FullDef);
+        return Math.floor(FullDef);
     },
 
     Atk :  function()
@@ -65,28 +65,11 @@ var Player = {
         return  Math.floor(Player.AtkBonus/Player.Level + Player.Level*3 + 6 + Player.AtkBonus/3);
     },
 
-    isMonk : function()
-    {
-        return Player.Class==4;
-    },
-
-    isWarrior : function()
-    {
-        return Player.Class==2;
-    },
-
-    isMage : function(){
-        return Player.Class==3;
-    },
-
-    isRogue: function(){
-        return Player.Class==1;
-    },
-
-    isCleric : function(){
-        return Player.Class==5;
-    }
-
+    isMonk : function()   {     return Player.Class==Archetype.Monk;     },
+    isWarrior : function(){     return Player.Class==Archetype.Warrior;  },
+    isMage : function()   {     return Player.Class==Archetype.Wizard;   },
+    isRogue: function()   {     return Player.Class==Archetype.Rogue;    },
+    isCleric : function() {     return Player.Class==Archetype.Healer;   }
 };
 
 
@@ -207,7 +190,6 @@ Player.ImproveDef= function (cost, AddDef,  button_num, maxTimesAllowed)
 {
     Player.DoTraining(cost, 0, 0, 0, AddDef, 0, button_num, maxTimesAllowed);
 };
-
 
 
 Player.DoTraining = function (cost, AddMaxHP, AddHP, AddAtk, AddDef, AddGold, button_num, maxTimesAllowed)

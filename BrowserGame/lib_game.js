@@ -184,11 +184,9 @@ var Location =
     };
 
 
-var GameMap=[];
-
-
 var Game = {
     cur_e:0,
+    GameMap=[],
     FirstAttack:1, // is first attack per round
     nop : function(){ ; },
     leave : function(){
@@ -199,11 +197,15 @@ var Game = {
         this.cur_e++;
         Game.FirstAttack=1;
     },
+    InitGameMap: function(size){
+
+      //push monsters // npc on map
+
+        //for ()
+    },
 
     TitleForClass : function(TitleRogue, TitleWarrior, TitleWizard, TitleHealer, TitleMonk)
     {
-
-        //console.log("[TitleForClass | pc]= ", Player.Class);
 
         if (Player.Class == Archetype.Rogue)
             return TitleRogue;
