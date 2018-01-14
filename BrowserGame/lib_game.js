@@ -91,6 +91,12 @@ var GetHintFor = function(index){
     return "";
 }
 
+
+function TraitEnabled(trait)
+{
+    return trait[1]>0;
+}
+
 var IsTraitEnabled = function(traitName)   {
 
     for (var i = Traits.length - 1; i >= 0; i--)

@@ -1,0 +1,73 @@
+
+
+.head { position:fixed;left: 50px; top: 50px;}
+
+.doll > div { border:2px dashed gray; position:fixed; background-color: #EEEEEE; }
+
+div.doll_weapon1 { position:fixed; left: 50px; top: 75px; width:50; height: 100px; }
+div.doll_weapon2 { position:fixed; left: 160px; top: 75px; width:50; height: 100px; }
+div.doll_head {    position:fixed; left: 105px; top: 50px; width:50; height: 50px; }
+div.doll_hands {   position:fixed; left: 50px; top: 130px; width:50; height: 50px; }
+div.doll_upper {   position:fixed; left: 105px; top: 105px; width:50; height: 100px; }
+div.doll_boots {   position:fixed; left: 105px; top: 160px; width:50; height: 50px; }
+
+div.doll_info {   position:fixed; left: 250px; top: 50px; width:120; height: 200px; }
+
+
+div.shop { border:2px dashed silver;  background-color: #EEFFAA;   position:fixed; left: 20px; top:300px; width:950; height: 500px; }
+
+
+
+
+
+div.doll_weapon1  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
+
+div.doll_head  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
+
+
+div.doll_hands  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
+
+
+div.doll_upper  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
+
+
+div.doll_boots  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
+
+
+div.doll_weapon2  {
+  display:block;
+  background-image: url(png/items1.png);
+  background-position: -0px -320px;
+  width: 32px;
+  height: 32px;
+}
