@@ -142,6 +142,7 @@ how 'Prestige' works ??
  more money from work
  better neighbours
  respect from police
+ less anger generation
 
 items: 
  money 

@@ -1,0 +1,122 @@
+<!--game.html-->
+<html>
+<head>
+	<title>JS Gladiators 0.1</title>
+
+	<link rel="stylesheet" type="text/css" href="game.css">
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="game.js"></script>
+
+</head>
+
+<body>
+
+<div id="Loading"><h1>Loading</h1></div>
+
+
+<!-- http://clipart.nicubunu.ro/?gallery=rpg_map -->
+
+<div id="Map">
+	 <h1>Map</h1>
+
+<!--img src='Images/map.png'/-->
+
+
+<img src='Images/watch_tower.png'/>
+
+
+<a OnClick="Tab.Open('Shop')">Shop
+	<img src='Images/city.png'/>
+</a>
+
+<a OnClick="Tab.Open('Ship')">Ship
+	<img src='Images/docks.png'>
+</a> 
+
+<a OnClick="Tab.Open('Cells')">Cells
+ <img src='Images/jailhouse.png'>
+</a>
+
+<a OnClick="Tab.Open('Arena')" href="#">Arena
+
+<img src='Images/ruins.png'/>
+<img src='Images/tavern.png'/>
+<img src='Images/inn.png'/> </a>
+
+</div>
+
+
+<div id="Arena">
+	<h1>Arena</h1>
+	<div class=Exit>
+ 	<a OnClick="Tab.Open('Map')">Exit</a>
+	</div>
+	<div class="hpbar bar1">HP bar #1</div>
+	<div class="hpbar bar2">HP bar #2</div>
+	<div class="ArenaLog">
+		<p>Fight log here</p>
+	</div>
+	
+</div>
+
+
+<div id="Cells">
+
+	<h1>Cells</h1>
+
+<ul> 
+	<li>Gladiator #1</li>
+	<li>Gladiator #2</li>
+
+</ul>
+
+
+
+<div class=gear>
+<ul>
+	<li>Weapon:</li>
+	<li>Helmet:</li>
+	<li>Hands:</li>
+	<li>Armor:</li>
+	<li>Legs:</li>
+</ul>
+</div>
+
+ <div class=preview>Gladiators preview zone
+ <ul>
+	<li>Health:</li>
+	<li>Morale:</li>
+	<li>Attack:</li>
+	<li>Defence:</li>
+	<li>Skills</li>
+</ul>
+ </div>
+ 
+<div class=Exit>
+ <a OnClick="Tab.Open('Map')">Exit</a>
+</div>
+</div>
+
+
+
+</div>
+
+<div id="Shop">Shop
+
+<div class=Exit>
+ <a OnClick="Tab.Open('Map')">Exit</a>
+</div>
+
+
+ <ul>
+ 	 <li>armor #1</li>
+</ul>
+
+<div>Item preview zone</div>
+
+</div>
+
+
+</body>
+</html>

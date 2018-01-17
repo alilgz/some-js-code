@@ -1,0 +1,56 @@
+
+Character info:
+
+1. Name - then add title after few wins 
+2.  Level  - 1 - 5 (class pick) - 10 (skill) -12 - 14 - 15 - 16 .. (class abilities unlock levels) 
+
+3. Stats:
+ Strength ( attack power for melee weapons)
+ Dextery ( attack speed / evasion and block rate)
+ Constituton ( max health, health regen, )
+ ?? Luck ??
+ ?? Int ??
+
+4. Perks ( random - can be useful or not, max 2)
+5. Skills
+
+6. Race 
+there 4 races: human, dwarf, elf, orc. 
+  human 
+    - in general they have less skill values, but they learn much faster ( 20% faster skills progress, 10% more exp)
+    - average health, str, con, dex
+  dwarfs 
+   - skilled with axes, blunts and swords 
+   - high Health, con, str
+   - low dex
+  elfes 
+    - skilled with bows, swords, and polearms 
+    - high dex, low con, avg str
+    - race skill for evasion / initiative , race skill for archer 
+  orks 
+     - skilled with axes, polearms  
+     - High Health, avg+ dx, str, con
+     - race skills for hunt ( sense?)
+
+
+1. classes : 
+ gladiator ( 2 swords/axes/blunts ) aka murmilo 
+ swordsman ( sword/axe/blunt + shield) aka thraex
+ pikeman ( polearm, 2 hands ) aka reta???/ 
+ scout ( archer)
+ rogue (dagger)
+
+1.1
+ first your gladiators start as classless 
+on level 5 they can choose class
+ there will be choice of 2 ( 5 possible classes), so player(if lucky) can pick usefull class
+
+1.2
+ three classes can be used on fight ( gladi, swordsman, pikeman)
+ scout can be useful as hunter/ranger at hunt
+ rogue can be used as hired criminal ( steal money, etc)
+
+1.3 
+ Skills - ???
+
+  
