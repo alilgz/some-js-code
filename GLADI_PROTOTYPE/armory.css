@@ -1,21 +1,21 @@
 
 
-.head { position:fixed;left: 50px; top: 50px;}
+.head { position:absolute;left: 50px; top: 50px;}
 
-.doll > div { border:2px dashed gray; position:fixed; background-color: #EEEEEE; }
+.doll > div { border:2px dashed gray; position:absolute; background-color: #EEEEEE; }
 
-div.doll_weapon1 { position:fixed; left: 50px; top: 75px; width:50; height: 100px; }
-div.doll_weapon2 { position:fixed; left: 160px; top: 75px; width:50; height: 100px; }
-div.doll_head {    position:fixed; left: 105px; top: 50px; width:50; height: 50px; }
-div.doll_hands {   position:fixed; left: 50px; top: 130px; width:50; height: 50px; }
-div.doll_upper {   position:fixed; left: 105px; top: 105px; width:50; height: 100px; }
-div.doll_boots {   position:fixed; left: 105px; top: 160px; width:50; height: 50px; }
+div.doll_weapon1 { position:absolute; left: 50px; top: 75px; width:50; height: 100px; }
+div.doll_weapon2 { position:absolute; left: 160px; top: 75px; width:50; height: 100px; }
+div.doll_head {    position:absolute; left: 105px; top: 50px; width:50; height: 50px; }
+div.doll_hands {   position:absolute; left: 50px; top: 130px; width:50; height: 50px; }
+div.doll_upper {   position:absolute; left: 105px; top: 105px; width:50; height: 100px; }
+div.doll_boots {   position:absolute; left: 105px; top: 160px; width:50; height: 50px; }
 
-div.doll_info {   position:fixed; left: 250px; top: 50px; width:120; height: 200px; }
+div.doll_info {   position:absolute; left: 250px; top: 50px; width:120; height: 200px; }
 
 
-div.shop { border:2px dashed silver;  background-color: #EEFFAA;   position:fixed; left: 20px; top:300px; width:950; height: 500px; }
-
+div.shop { border:2px dashed silver;  background-color: #EEFFAA;   position:absolute; left: 20px; top:300px; width:950; height: 290px; }
+div.storage { border:2px dashed silver;  background-color: #EEFFAA;   position:absolute; left: 20px; top:600px; width:950; height: 500px; }
 
 
 
@@ -70,4 +70,47 @@ div.doll_weapon2  {
   background-position: -0px -320px;
   width: 32px;
   height: 32px;
+}
+
+
+
+/* popup */
+
+
+#id_confrmdiv
+{
+    display: none;
+    background-color: #eee;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    position: fixed;
+    width: 300px;
+    left: 50%;
+    top: 50%;
+    margin-left: -150px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#id_confrmdiv button {
+    background-color: #ccc;
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    padding: 2px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+}
+
+#id_confrmdiv button:hover
+{
+    background-color: #ddd;
+}
+
+#confirmBox .message
+{
+    text-align: left;
+    margin-bottom: 8px;
 }
