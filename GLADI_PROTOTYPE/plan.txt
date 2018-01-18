@@ -34,23 +34,51 @@ there 4 races: human, dwarf, elf, orc.
 
 
 1. classes : 
- gladiator ( 2 swords/axes/blunts ) aka murmilo 
- swordsman ( sword/axe/blunt + shield) aka thraex
+ gladiator (typical l2 gladiator -  2 swords/axes/blunts ) aka murmilo 
+ swordsman (typical l2 tank  - sword/axe/blunt + shield) aka thraex
  pikeman ( polearm, 2 hands ) aka reta???/ 
- scout ( archer)
- rogue (dagger)
+ scout ( archer/hunter /ranger)
+ rogue ( dagger / trief/ treasure hunter/ spy)
 
 1.1
  first your gladiators start as classless 
 on level 5 they can choose class
- there will be choice of 2 ( 5 possible classes), so player(if lucky) can pick usefull class
+ there will be choice of 2 ( from 5 possible classes), so player(if lucky) can pick usefull class
 
 1.2
  three classes can be used on fight ( gladi, swordsman, pikeman)
  scout can be useful as hunter/ranger at hunt
- rogue can be used as hired criminal ( steal money, etc)
+ rogue can be used as hired criminal ( steal money, documents)
 
-1.3 
- Skills - ???
+1.3. 
+ Skills 
 
+ weapon mastery - general
+ sword mastery
+ axe mastery
+ blunt mastery
+ polearm mastery   
+ shield mastery 
+ heavy armor 
+ light armor 
+
+
+ some unlock only for races:
+  faster learning : human //require library
+  faster recovery: orc
+  evasion mastery: elf
+    dwarf ??
   
+ some unlock only for classes: 
+ dual weapons
+ hunting
+ dagger mastery
+ bow mastery 
+
+ working:
+ blacksmith 
+ cooking
+  
+  
+1.4 
+ Class abilities 
