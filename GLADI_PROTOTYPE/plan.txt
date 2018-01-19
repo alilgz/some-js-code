@@ -122,3 +122,27 @@ on level 5 they can choose class
  rogue can be used as hired criminal ( steal money, documents)
 
  
+
+back to reality 
+ ---------------------------- current release -----------------
+
+ health / max health
+ morale [-20 to 20] (~5 grades)
+ atack / def skill
+
+ inventory: armor, helmet, boots, gloves, weapon, shield(weapon2)
+   only param of item is atack/def
+
+fight:
+5% chance to miss
+random pick who atack first
+20% chance crit - on crit there no attack back
+shield simply add constant def 
+
+todo: quick fighter function to make tests, comparing 2 champions  ( also predict and tell chance to win )
+
+
+
+
+
+
