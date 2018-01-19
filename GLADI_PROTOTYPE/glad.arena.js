@@ -40,8 +40,7 @@ $('#StartFight').on('click', function(){
 
 AddLogMsg( 'Fight!'+ 'First : ' + atk1 + ' ATK, '+ def1 +' DEF\n Second:'+ atk2 +' ATK, ' + def2 + ' DEF'  );
 
-  
-    FightOneRound(atk1, atk2);
+  FightOneRound(atk1, atk2);
  // NOW FIGHT IN PROGRESS 
 
 });
@@ -51,20 +50,48 @@ var hp1=200;
 var hp2=200;
 
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 
 
 function FightOneRound(atk1, atk2){
  
  console.log(atk1, atk2);
+var critChance=30; 
+var evadeChance=5; 
   	var dmg1=atk1;
   	var dmg2=atk2;
+var crit=0;
+var evade=0;
 
-  	hp1-=dmg2;
-  	hp2-=dmg1;
+  	if (getRandomInt(0, 100) < critChance) // crit 
+  	{
+  		
+  		if (getRandomInt(0, 100)>50){  //first
+  			dmg1*=2;
+  			crit=1;
 
- 	DescribeAttack('#1', dmg1);
- 	DescribeAttack('#2', dmg2);
+  		} else {
+  			dmg2*=2;
+  			crit=2;
+  		}
+  	} 
+
+  	if (getRandomInt(0, 100) < evadeChance) // crit 
+  	{
+		if (getRandomInt(0, 100)>50)  
+			evade=1;
+		else
+			 evade=2;
+  	}
+
+  	hp1-= evade==1 ? 0 : dmg2;
+  	hp2-= evade==2 ? 0 : dmg1;
+
+ 	DescribeAttack('#1', dmg1, crit==1, evade==2); // if OPPONENT EVADE
+ 	DescribeAttack('#2', dmg2, crit==2, evade==1);
  
  if (hp1<=0 || hp2<=0)
  {
@@ -78,15 +105,18 @@ function FightOneRound(atk1, atk2){
  {
 
  	// increase attack power 
- 	setTimeout(function(){ FightOneRound( (atk1*1) + 1, (atk2*1)+ 1); } , 500);
+ 	setTimeout(function(){ FightOneRound( (atk1*1) , (atk2*1)); } , 500);
 
  }
 
 }
 
-function DescribeAttack(name, dmg)
+function DescribeAttack(name, dmg, isCrit, isEvaded)
 {
-	AddLogMsg('Player '+name+' hit for  '+ dmg +' damage');
+ if (isEvaded)
+ 	AddLogMsg( 'Player '+name+' hit, but opponent evaded attack.');
+ 	else
+	AddLogMsg( (isCrit? 'Critical! ':'') + 'Player '+name+' hit for  '+ dmg +' damage');
 }
 
 AddLogMsg=function(txt){
