@@ -1,0 +1,92 @@
+<html>
+<head>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  
+  <script type="text/javascript" src="glad.items.js"></script>
+
+  <script type="text/javascript" src="glad.arena.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="armory.css">
+
+  <title>arena example</title>
+
+</head>
+
+<body>
+
+
+
+
+<div style="position:absolute;;border:1px lightblue solid; width:400px; height:400px; display:inline">
+  
+  <label><input type=radio name="curr_doll" id='CURR_DOLL' value='first'>1st warrior</label>
+
+<div id="first" class="doll" >
+  <div class="doll_head"></div>
+  <div class="doll_hands"></div>
+  <div class="doll_upper"></div>
+  <div class="doll_boots"></div>
+  <div class="doll_weapon1"> </div>
+ <div class="doll_weapon2"></div>
+ <div class="doll_info">
+ 	<p>Attack:<span id='ATK_INFO'></span> &nbsp; <span id='ATK_INFO_COMPARE'></span></p>
+ 	<p>Defence:<span id='DEF_INFO'></span> &nbsp; <span id='DEF_INFO_COMPARE'></span></p>
+  </div>
+</div>
+</div>
+
+
+<div style="position:absolute;border:1px lightblue solid; width:400px; height:400px; left:420px; display:inline">
+
+  <label><input type=radio  name="curr_doll"  id='CURR_DOLL' value='second'>2nd warrior</label>
+
+<div id="second" class="doll">
+  <div class="doll_head"></div>
+  <div class="doll_hands"></div>
+  <div class="doll_upper"></div>
+  <div class="doll_boots"></div>
+  <div class="doll_weapon1"> </div>
+ <div class="doll_weapon2"></div>
+ <div class="doll_info">
+  <p>Attack:<span id='ATK_INFO'></span> &nbsp; <span id='ATK_INFO_COMPARE'></span></p>
+  <p>Defence:<span id='DEF_INFO'></span> &nbsp; <span id='DEF_INFO_COMPARE'></span></p>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="log"  style="display:block;position:absolute;border:1px lightblue solid; top:420px;width:400px; height:200px; left:20px; "> 
+
+ <a href="#" id="StartFight">FIGHT</a>
+<p id="LogText"></p>
+</div>
+ 
+<div class="storage" style="display:block;">
+	
+<div id="weapons" style="display: inline-block;width:300px;"> 
+</div>
+
+<div id="armors" style="display: inline-block;width:300px;">
+	<h2>Storage</h2>
+</div>
+
+<div id="parts" style="display: inline-block;width:300px;">
+</div>
+</div>
+</div>
+
+
+<div id="id_confrmdiv"><span>confirm plx</span>
+    <button id="id_truebtn">Yes</button>
+    <button id="id_falsebtn">No</button>
+</div>
+
+
+</body>
+</html>

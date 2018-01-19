@@ -18,8 +18,6 @@ div.shop { border:2px dashed silver;  background-color: #EEFFAA;   position:abso
 div.storage { border:2px dashed silver;  background-color: #EEFFAA;   position:absolute; left: 20px; top:600px; width:950; height: 500px; }
 
 
-
-
 div.doll_weapon1  {
   display:block;
   background-image: url(png/items1.png);
