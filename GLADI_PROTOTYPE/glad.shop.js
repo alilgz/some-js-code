@@ -102,6 +102,7 @@ $('.gear').mouseover(function(e){
 
        
 var champion = new Equipment();
+
  
 
 

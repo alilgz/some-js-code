@@ -27,20 +27,19 @@ LoadItems('parts', items.filter(x=>x.type=="boots" || x.type=="head" || x.type==
 
 $('#StartFight').on('click', function(){
 
- var def1 = $('#first #DEF_INFO').text();
- var def2 = $('#second #DEF_INFO').text();
- var atk1 = $('#first #ATK_INFO').text();
- var atk2 = $('#second #ATK_INFO').text();
+ var def1 = $('#first #PDEF_INFO').text();
+ var def2 = $('#second #PDEF_INFO').text();
+
+ var atk1 = $('#first #PATK_INFO').text();
+ var atk2 = $('#second #PATK_INFO').text();
 
 //reset HP 
  hp1=200;
  hp2=200;
 
-
-
 AddLogMsg( 'Fight!'+ 'First : ' + atk1 + ' ATK, '+ def1 +' DEF\n Second:'+ atk2 +' ATK, ' + def2 + ' DEF'  );
 
-  FightOneRound(atk1, atk2);
+  FightOneRound(atk1*50/def2, atk2*50/def1);
  // NOW FIGHT IN PROGRESS 
 
 });
@@ -61,8 +60,8 @@ function FightOneRound(atk1, atk2){
  console.log(atk1, atk2);
 var critChance=30; 
 var evadeChance=5; 
-  	var dmg1=atk1;
-  	var dmg2=atk2;
+  	var dmg1=Math.floor(atk1  * (95 + 10*Math.random()) / 100 );
+  	var dmg2=Math.floor(atk2* (95 + 10*Math.random()) / 100 );
 var crit=0;
 var evade=0;
 
@@ -148,6 +147,12 @@ $(document).on("click", '.storage a.gear', function(e){
 	$(''+bdy+'#DEF_INFO').text(champion.totalArmor());
 	$(''+bdy+'#ATK_INFO').text(champion.totalAttack());
 
+	
+	$(''+bdy+'#PATK_INFO').text(Glad123.GetStat("PAtk"));
+	$(''+bdy+'#PDEF_INFO').text(Glad123.GetStat("PDef"));
+
+
+
 	$(''+bdy+'#DEF_INFO_COMPARE').text(champion.totalArmorCompare(items[number]));
 	$(''+bdy+'#ATK_INFO_COMPARE').text(champion.totalWeaponCompare(items[number]));
 
@@ -213,8 +218,9 @@ $('.gear').mouseover(function(e){
 });	
 
        
+
 var champion = new Equipment();
- 
+var Glad123 = new Stats(3,3,3, champion) ;
 
 
 function filterBreastplate(item){

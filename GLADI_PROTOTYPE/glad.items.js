@@ -1,6 +1,51 @@
 
 
 
+class Stats
+{
+
+	 constructor(str, dex, con, gear){
+	 	this.stats =  [];
+	 	this.stats["STR"]=str;
+	 	this.stats["DEX"]=dex;
+	 	this.stats["CON"]=con;
+	 	this.equip = gear;
+	 }
+
+
+}
+
+Stats.prototype.GetStat = function(statName){
+	
+	 switch(statName)
+	 {
+	 	//base stats - pure value
+	 	case "STR":
+	 	case "DEX":
+	 	case "CON":
+	 	 return this.stats[statName];
+
+	 	// calculated by formula 
+	 	case "PAtk":
+	 	 return ( this.stats["STR"] * 1.02) * this.equip.totalAttack() ;  // 1 str = 2% patk  ++ skill
+
+	 	case "PDef":
+	 	 return  this.equip.totalArmor() ; // + skill /etc 
+
+	 	case "Critical":
+	 	 return 15 + this.stats["DEX"] * 2 ;// X weapon type modifier?
+
+	 	case "Atk.Speed":
+	 	 return this.stats["DEX"] * 6  ; // X weapon type modifier?
+
+	 	case "Eva":
+	 	 return this.stats["DEX"] * 2  ; // X weapon type modifier?
+
+	 }
+	 
+}
+
+
 class Item
 {
 
