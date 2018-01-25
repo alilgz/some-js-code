@@ -27,6 +27,9 @@ Stats.prototype.GetStat = function(statName){
 
 	 	// calculated by formula 
 	 	case "PAtk":
+	 	//Damage=77 * [weapon_random * (pAtk * cdMult * cdBonus * cdPosition + isPosition * pAtk) + cdStaticBonus] / (sDef+pDef) * attBonus * PvPbonus * PvEbonus * SS * SS_bonus
+	 	// ((weapon p.atk.*level modifier*str modifier*mastery modifier*armor bonus*m.def. bonus*buffs type 1)+weapon mastery+buffs type 2+weapon bonus)*70/((((4+armor p.def.)*level modifier*armor bonus)*buffs type 1)+armor mastery+buffs type 2) = damage
+
 	 	 return ( this.stats["STR"] * 1.02) * this.equip.totalAttack() ;  // 1 str = 2% patk  ++ skill
 
 	 	case "PDef":
@@ -40,6 +43,13 @@ Stats.prototype.GetStat = function(statName){
 
 	 	case "Eva":
 	 	 return this.stats["DEX"] * 2  ; // X weapon type modifier?
+
+	 	case "ShieldDefRate":
+	 	 return 15; //% + skill 'shielding' each level add 0.5%
+
+		case "ShieldDefValue":
+	 	 return this.equip.ShieldArmor() ; //%
+
 
 	 }
 	 
